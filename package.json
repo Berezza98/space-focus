@@ -1,0 +1,47 @@
+{
+  "name": "space-focus",
+  "version": "0.0.56",
+  "description": "Focus React library based on elements position and size",
+  "main": "dist/index.bundle.js",
+  "module": "dist/index.bundle.js",
+  "scripts": {
+    "build": "webpack --config webpack.prod.js",
+    "build-dev": "webpack --config webpack.dev.js",
+    "example": "webpack serve --open --config webpack.dev.js",
+    "prepublish": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Berezza98/space-focus.git"
+  },
+  "keywords": [
+    "react",
+    "focus"
+  ],
+  "author": "Roman Berezdetskyi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Berezza98/space-focus/issues"
+  },
+  "homepage": "https://github.com/Berezza98/space-focus#readme",
+  "dependencies": {
+    "classnames": "^2.3.1",
+    "prop-types": "^15.8.1"
+  },
+  "peerDependencies": {
+    "react": "^16.8.0 || ^17 || ^18",
+    "react-dom": "^16.8.0 || ^17 || ^18"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.17.9",
+    "@babel/preset-env": "^7.16.11",
+    "@babel/preset-react": "^7.16.7",
+    "babel-loader": "^8.2.5",
+    "html-webpack-plugin": "^5.5.0",
+    "webpack": "^5.72.0",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.8.1",
+    "webpack-merge": "^5.8.0"
+  },
+  "files": ["dist"]
+}

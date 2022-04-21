@@ -1,1 +1,1 @@
-# space-focus
+# Focus React library based on elements position and size
