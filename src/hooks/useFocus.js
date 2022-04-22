@@ -4,7 +4,7 @@ import Vector from '../Vector';
 import focusStore from '../store';
 
 const useFocus = (ref, options = {}) => {
-  const { action, isFocused, layer, overflowRightHandler } = options;
+  const { action, isFocused, layer, overflowRightHandler, closest = false } = options;
 
   const [focused, setFocused] = useState(false);
 
@@ -29,6 +29,7 @@ const useFocus = (ref, options = {}) => {
       setFocused,
       action,
       overflowRightHandler,
+      closest,
     };
     
     focusStore.appendElement(focusObj, isFocused, layer);

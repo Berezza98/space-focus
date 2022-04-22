@@ -113,7 +113,7 @@ export class FocusStore {
     const { all, sameLine, idealAngle } = this.conditions(direction);
     const sameLineCandidates = otherElements.filter(el => all(el) && sameLine(el));
     const diffLineCandidates = otherElements.filter(el => all(el));
-    const candidates = sameLineCandidates.length > 0 ? sameLineCandidates : diffLineCandidates;
+    const candidates = sameLineCandidates.length > 0 && !active.closest ? sameLineCandidates : diffLineCandidates;
     
     if (candidates.length === 0) {
       if (direction === DIRECTION.RIGHT && this.active.overflowRightHandler) { // RIGHT OVERFLOW
