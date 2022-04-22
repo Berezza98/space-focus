@@ -1,6 +1,5 @@
 import React, { useRef } from 'react';
 import propTypes from 'prop-types';
-import classNames from 'classnames';
 import useFocus from '../hooks/useFocus';
 
 const FocusElement = ({
@@ -15,12 +14,19 @@ const FocusElement = ({
     overflowRightHandler
   });
 
-  const elClassNames = classNames(className, {
-    [focusedClassName]: focused
-  });
+  const getClassNames = () => {
+    const classNames = {
+      [className]: true,
+      [focusedClassName]: focused
+    };
+
+    const filtered = Object.entries(classNames).filter(([key, value]) => value);
+
+    return filtered.map(([key, value]) => key).join(' ');
+  }
 
   return (
-    <div ref={ref} className={elClassNames}>
+    <div ref={ref} className={getClassNames()}>
       {children}
     </div>
   );

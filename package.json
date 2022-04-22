@@ -1,6 +1,6 @@
 {
   "name": "space-focus",
-  "version": "0.0.58",
+  "version": "0.0.61",
   "description": "Focus React library based on elements position and size",
   "main": "dist/index.bundle.js",
   "module": "dist/index.bundle.js",
@@ -25,7 +25,6 @@
   },
   "homepage": "https://github.com/Berezza98/space-focus#readme",
   "dependencies": {
-    "classnames": "^2.3.1",
     "prop-types": "^15.8.1"
   },
   "peerDependencies": {
