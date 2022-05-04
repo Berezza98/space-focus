@@ -5,7 +5,8 @@ import useFocus from '../hooks/useFocus';
 const FocusElement = ({
   children, action, focus, className,
   focusedClassName, layer, overflowRightHandler,
-  closest, onFocus, onBlur, focusable = true
+  closest, onFocus, onBlur, focusable = true,
+  style,
 }) => {
   const ref = useRef(null);
   const { focused } = useFocus(ref, {
@@ -31,7 +32,7 @@ const FocusElement = ({
   }
 
   return (
-    <div ref={ref} className={getClassNames()}>
+    <div ref={ref} className={getClassNames()} style={style}>
       {children}
     </div>
   );
@@ -47,6 +48,7 @@ FocusElement.propTypes = {
   onFocus: propTypes.func,
   onBlur: propTypes.func,
   focusable: propTypes.bool,
+  style: propTypes.object,
 };
 
 export default FocusElement;
