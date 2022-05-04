@@ -11,9 +11,17 @@ export class FocusStore {
   
   set active(el) {
     this?._active?.setFocused(false);
+
+    if (typeof this?._active?.onBlur === 'function') {
+      this.active.onBlur(this.active);
+    }
     
     this._active = el;
     el.setFocused(true);
+
+    if (typeof el.onFocus === 'function') {
+      el.onFocus(el);
+    }
   }
 
   get active() {
@@ -134,7 +142,9 @@ export class FocusStore {
   }
 
   activeAction() {
-    this.active.action();
+    if (typeof this.active.action === 'function') {
+      this.active.action();
+    }
   }
 }
 

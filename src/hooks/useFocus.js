@@ -4,12 +4,15 @@ import Vector from '../Vector';
 import focusStore from '../store';
 
 const useFocus = (ref, options = {}) => {
-  const { action, isFocused, layer, overflowRightHandler, closest = false } = options;
+  const {
+    action, isFocused, layer, overflowRightHandler,
+    closest = false, onFocus, onBlur, focusable = true,
+  } = options;
 
   const [focused, setFocused] = useState(false);
 
   useEffect(() => {
-    if (!ref) {
+    if (!ref || !focusable) {
       return;
     }
 
@@ -30,13 +33,18 @@ const useFocus = (ref, options = {}) => {
       action,
       overflowRightHandler,
       closest,
+      onFocus,
+      onBlur,
+      el,
     };
     
     focusStore.appendElement(focusObj, isFocused, layer);
     
     const mouseoverHandler = () => focusStore.active = focusObj;
     const clickHandler = () => {
-      action();
+      if (typeof action === 'function') {
+        action();
+      }
     }
 
     el.addEventListener('mouseover', mouseoverHandler);

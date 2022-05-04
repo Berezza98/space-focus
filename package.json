@@ -1,6 +1,6 @@
 {
   "name": "space-focus",
-  "version": "0.0.66",
+  "version": "0.0.74",
   "description": "Focus React library based on elements position and size",
   "main": "dist/index.bundle.js",
   "module": "dist/index.bundle.js",
@@ -8,7 +8,7 @@
     "build": "webpack --config webpack.prod.js",
     "build-dev": "webpack --config webpack.dev.js",
     "example": "webpack serve --open --config webpack.dev.js",
-    "prepublish": "npm run build"
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -42,5 +42,7 @@
     "webpack-dev-server": "^4.8.1",
     "webpack-merge": "^5.8.0"
   },
-  "files": ["dist"]
+  "files": [
+    "dist"
+  ]
 }
