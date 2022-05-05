@@ -1,11 +1,10 @@
 import Vector from './Vector';
-import { DIRECTION, LAYERS, KEYS } from './consts';
+import { DIRECTION, DEFAULT_LAYER_ID, KEYS } from './consts';
 import addHandlers from './handlers';
-
-const { DEFAULT_LAYER_ID } = LAYERS;
 
 export class FocusStore {
   elements = [];
+  _lastFocused = {};
   _active = null;
   _activeLayer = DEFAULT_LAYER_ID;
   
@@ -17,6 +16,7 @@ export class FocusStore {
     }
     
     this._active = el;
+    this.lastFocused[el.layer] = el;
     el.setFocused(true);
 
     if (typeof el.onFocus === 'function') {
@@ -28,15 +28,8 @@ export class FocusStore {
     return this._active;
   }
 
-  set activeLayer(layerId = DEFAULT_LAYER_ID) {
+  set activeLayer(layerId) {
     this._activeLayer = layerId;
-
-    const layer = this.elements[layerId];
-
-    if (layer) {
-      const defaultFocused = layer.find(el => el.defaultFocused);
-      this.active = defaultFocused || this.elements[layerId][0];
-    }
   }
 
   get activeLayer() {
@@ -45,6 +38,14 @@ export class FocusStore {
 
   get otherElements() {
     return this.elements[this.activeLayer].filter(el => el !== this.active);
+  }
+
+  get lastFocused() {
+    return this._lastFocused;
+  }
+
+  set lastFocused(value) {
+    this._lastFocused = value;
   }
 
   static instance = null;
@@ -62,7 +63,7 @@ export class FocusStore {
     addHandlers(mergedKeys);
   }
 
-  appendElement(el, setFocus, layer = DEFAULT_LAYER_ID) {
+  appendElement(el, setFocus, layer) {
     if (!this.elements[layer]) {
       this.elements[layer] = [];
     }
@@ -74,7 +75,7 @@ export class FocusStore {
     this.elements[layer].push(el);
   }
 
-  removeElement(el, layer = DEFAULT_LAYER_ID) {
+  removeElement(el, layer) {
     const index = this.elements[layer].indexOf(el);
     this.elements[layer].splice(index, 1);
 
@@ -145,6 +146,28 @@ export class FocusStore {
     if (typeof this.active.action === 'function') {
       this.active.action();
     }
+  }
+
+  setActiveLayer(layerId = DEFAULT_LAYER_ID, options) {
+    const config = Object.assign({}, {
+      useLastFocused: false,
+    }, options);
+
+    this.activeLayer = layerId;
+
+    const layer = this.elements[layerId];
+
+    if (!layer) return;
+
+    const lastFocusedFromLayer = this.lastFocused[layerId];
+
+    if (config.useLastFocused && lastFocusedFromLayer) {
+      this.active = lastFocusedFromLayer;
+      return;
+    }
+
+    const defaultFocused = layer.find(el => el.defaultFocused);
+    this.active = defaultFocused || this.elements[layerId][0];
   }
 }
 

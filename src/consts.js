@@ -1,6 +1,4 @@
-export const LAYERS = {
-  DEFAULT_LAYER_ID: 'DEFAULT_LAYER'
-};
+export const DEFAULT_LAYER_ID = 'DEFAULT_LAYER';
 
 export const DIRECTION = {
   UP: 'UP',

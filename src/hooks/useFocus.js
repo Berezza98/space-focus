@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react';
 import { findDOMNode } from 'react-dom';
 import Vector from '../Vector';
 import focusStore from '../store';
+import { DEFAULT_LAYER_ID } from '../consts';
 
 const useFocus = (ref, options = {}) => {
   const {
-    action, isFocused, layer, overflowRightHandler,
-    closest = false, onFocus, onBlur, focusable = true,
+    action, isFocused, layer = DEFAULT_LAYER_ID,
+    overflowRightHandler, closest = false, onFocus,
+    onBlur, focusable = true,
   } = options;
 
   const [focused, setFocused] = useState(false);
@@ -23,6 +25,7 @@ const useFocus = (ref, options = {}) => {
     const bottomRight = new Vector(left + width, top + height);
 
     const focusObj = {
+      layer,
       defaultFocused: isFocused,
       positions: {
         center,
@@ -59,7 +62,9 @@ const useFocus = (ref, options = {}) => {
 
   return {
     focused,
-    setActiveLayer: layerId => focusStore.activeLayer = layerId
+    setActiveLayer: (layerId, options) => {
+      focusStore.setActiveLayer(layerId, options);
+    }
   };
 }
 
