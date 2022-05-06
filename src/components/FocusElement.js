@@ -6,7 +6,8 @@ const FocusElement = ({
   children, action, focus, className,
   focusedClassName, layer, overflowRightHandler,
   closest, onFocus, onBlur, focusable = true,
-  style, dangerouslySetInnerHTML,
+  style, dangerouslySetInnerHTML, focusableContainer,
+  saveLastFocused,
 }) => {
   const ref = useRef(null);
   const { focused } = useFocus(ref, {
@@ -18,6 +19,8 @@ const FocusElement = ({
     onFocus,
     onBlur,
     focusable,
+    focusableContainer,
+    saveLastFocused,
   });
 
   const getClassNames = () => {
@@ -49,7 +52,9 @@ FocusElement.propTypes = {
   onBlur: propTypes.func,
   focusable: propTypes.bool,
   style: propTypes.object,
-  dangerouslySetInnerHTML: propTypes.object
+  dangerouslySetInnerHTML: propTypes.object,
+  focusableContainer: propTypes.string,
+  saveLastFocused: propTypes.bool,
 };
 
 export default FocusElement;

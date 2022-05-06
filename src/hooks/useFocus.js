@@ -8,7 +8,8 @@ const useFocus = (ref, options = {}) => {
   const {
     action, isFocused, layer = DEFAULT_LAYER_ID,
     overflowRightHandler, closest = false, onFocus,
-    onBlur, focusable = true,
+    onBlur, focusable = true, focusableContainer,
+    saveLastFocused = true,
   } = options;
 
   const [focused, setFocused] = useState(false);
@@ -41,6 +42,8 @@ const useFocus = (ref, options = {}) => {
       onFocus,
       onBlur,
       el,
+      focusableContainer,
+      saveLastFocused,
     };
     
     focusStore.appendElement(focusObj, isFocused, layer);

@@ -4,23 +4,33 @@ import addHandlers from './handlers';
 
 export class FocusStore {
   elements = [];
-  _lastFocused = {};
+  _lastFocusedFromLayer = {};
+  _lastFocusedFromContainer = {};
   _active = null;
   _activeLayer = DEFAULT_LAYER_ID;
   
   set active(el) {
+    let elementToFocus = el;
+
     this?._active?.setFocused(false);
 
     if (typeof this?._active?.onBlur === 'function') {
       this.active.onBlur(this.active);
     }
-    
-    this._active = el;
-    this.lastFocused[el.layer] = el;
-    el.setFocused(true);
 
-    if (typeof el.onFocus === 'function') {
-      el.onFocus(el);
+    if (elementToFocus.focusableContainer) {
+      elementToFocus = this._handleFocusableContainers(elementToFocus);
+    }
+    
+    if (elementToFocus.saveLastFocused) {
+      this.lastFocusedFromLayer[elementToFocus.layer] = elementToFocus;
+    }
+    
+    this._active = elementToFocus;
+    elementToFocus.setFocused(true);
+
+    if (typeof elementToFocus.onFocus === 'function') {
+      elementToFocus.onFocus(elementToFocus);
     }
   }
 
@@ -40,12 +50,20 @@ export class FocusStore {
     return this.elements[this.activeLayer].filter(el => el !== this.active);
   }
 
-  get lastFocused() {
-    return this._lastFocused;
+  get lastFocusedFromLayer() {
+    return this._lastFocusedFromLayer;
   }
 
-  set lastFocused(value) {
-    this._lastFocused = value;
+  set lastFocusedFromLayer(value) {
+    this._lastFocusedFromLayer = value;
+  }
+
+  get lastFocusedFromContainer() {
+    return this._lastFocusedFromContainer;
+  }
+
+  set lastFocusedFromContainer(value) {
+    this._lastFocusedFromContainer = value;
   }
 
   static instance = null;
@@ -63,6 +81,21 @@ export class FocusStore {
     addHandlers(mergedKeys);
   }
 
+  _handleFocusableContainers(el) {
+    const sameFocusableContainer = this.active.focusableContainer === el.focusableContainer;
+    const lastFocusedFromContainerEmpty = !this.lastFocusedFromContainer[el.focusableContainer];
+
+    if ((sameFocusableContainer || lastFocusedFromContainerEmpty) && el.saveLastFocused) {
+      this.lastFocusedFromContainer[el.focusableContainer] = el;
+    }
+
+    if (!lastFocusedFromContainerEmpty) {
+      return this.lastFocusedFromContainer[el.focusableContainer];
+    }
+
+    return el;
+  }
+
   appendElement(el, setFocus, layer) {
     if (!this.elements[layer]) {
       this.elements[layer] = [];
@@ -76,6 +109,14 @@ export class FocusStore {
   }
 
   removeElement(el, layer) {
+    if (el.focusableContainer && this.lastFocusedFromContainer[el.focusableContainer] === el) {
+      delete this.lastFocusedFromContainer[el.focusableContainer];
+    }
+
+    if (this.lastFocusedFromLayer[el.layer] === el) {
+      delete this.lastFocusedFromLayer[el.layer];
+    }
+
     const index = this.elements[layer].indexOf(el);
     this.elements[layer].splice(index, 1);
 
@@ -159,7 +200,7 @@ export class FocusStore {
 
     if (!layer) return;
 
-    const lastFocusedFromLayer = this.lastFocused[layerId];
+    const lastFocusedFromLayer = this.lastFocusedFromLayer[layerId];
 
     if (config.useLastFocused && lastFocusedFromLayer) {
       this.active = lastFocusedFromLayer;
