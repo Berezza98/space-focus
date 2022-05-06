@@ -18,9 +18,7 @@ export class FocusStore {
       this.active.onBlur(this.active);
     }
 
-    if (elementToFocus.focusableContainer) {
-      elementToFocus = this._handleFocusableContainers(elementToFocus);
-    }
+    elementToFocus = this._handleFocusableContainers(elementToFocus);
     
     if (elementToFocus.saveLastFocused) {
       this.lastFocusedFromLayer[elementToFocus.layer] = elementToFocus;
@@ -82,15 +80,17 @@ export class FocusStore {
   }
 
   _handleFocusableContainers(el) {
-    const sameFocusableContainer = this.active.focusableContainer === el.focusableContainer;
-    const lastFocusedFromContainerEmpty = !this.lastFocusedFromContainer[el.focusableContainer];
+    if (!el.focusableContainer) return el;
 
-    if ((sameFocusableContainer || lastFocusedFromContainerEmpty) && el.saveLastFocused) {
-      this.lastFocusedFromContainer[el.focusableContainer] = el;
+    const sameFocusableContainer = this.active.focusableContainer === el.focusableContainer;
+    const lastFocusedFromContainerExists = this.lastFocusedFromContainer[el.focusableContainer];
+
+    if (!sameFocusableContainer && lastFocusedFromContainerExists) {
+      return this.lastFocusedFromContainer[el.focusableContainer];
     }
 
-    if (!lastFocusedFromContainerEmpty) {
-      return this.lastFocusedFromContainer[el.focusableContainer];
+    if ((!sameFocusableContainer && !lastFocusedFromContainerExists) || el.saveLastFocused) {
+      this.lastFocusedFromContainer[el.focusableContainer] = el;
     }
 
     return el;
