@@ -31,6 +31,8 @@ const useFocus = (ref, options = {}) => {
         center,
         topLeft,
         bottomRight,
+        height,
+        width,
       },
       setFocused,
       action,
