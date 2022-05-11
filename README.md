@@ -174,11 +174,12 @@ __overwriteControl__ (Object) - default undefined
     closest,
     onFocus,
     onBlur,
+    onDirectionKeyDown,
     focusable,
     focusableContainer,
     saveLastFocused,
+    overwriteControl,
     id,
-    overwriteControl
   });
 ```
 
@@ -195,11 +196,12 @@ __overwriteControl__ (Object) - default undefined
   - closest
   - onFocus
   - onBlur
+  - onDirectionKeyDown
   - focusable
   - focusableContainer
   - saveLastFocused
-  - id
   - overwriteControl
+  - id
 
 ### Хук повертає такі значення:
 
