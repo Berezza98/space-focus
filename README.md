@@ -54,9 +54,13 @@ options - об'єкт, який на даний момент приймає ті
   import { FocusElement, useFocus, DEFAULT_LAYER_ID } from 'space-focus';
 ```
 
+- DIRECTION
 - DEFAULT_LAYER_ID
 - FocusElement
 - useFocus
+
+## DIRECTION
+Константа-об'єкт, у якому зберігаються назви напрямків. Всередині 4 властивості: UP, DOWN, LEFT, RIGHT. Часто використовується для overwriteControl.
 
 ## DEFAULT_LAYER_ID
 
@@ -100,6 +104,8 @@ options - об'єкт, який на даний момент приймає ті
 - focusable
 - focusableContainer
 - saveLastFocused
+- id
+- overwriteControl
 
 __closest__ (Boolean)
 
@@ -118,6 +124,40 @@ __saveLastFocused__ (Boolean) - default value __true__
 
 Властивість, котра відповідає за те, чи буде даний __FocusableElement__ можливість зберігатись, як останній зафокушений елемент у __FocusableContainer__ та __Layer__.
 
+__id__ (Number || String) - default undefined
+
+Властивість, котра відповідає за ідентифікацію фокусного елементу, за допомогою цієї властивості є можливість фокусити елементи з певним ідентифікатором, через __overwriteControl__
+
+__overwriteControl__ (Object) - default undefined
+
+Влстивість у вигляді об'єкта, за допомогою якої можна перезаписувати дефолтну поведінку фокуса. Для прикладу можна змінити елемент, на який поставиться фокус при натисненні кнопки будь-якого напрямку. Приклад:
+
+```js
+  import { DIRECTION, FocusElement } from 'space-focus';
+
+  const overwriteControl = {
+    [DIRECTION.UP]: 'UP_EL_ID',
+    [DIRECTION.DOWN]: 'DOWN_EL_ID',
+    [DIRECTION.LEFT]: 'LEFT_EL_ID',
+    [DIRECTION.RIGHT]: 'RIGHT_EL_ID',
+  };
+
+  <FocusElement
+    focus
+    className="block"
+    focusedClassName="focused-block"
+    action={enterOrClickHandler}
+    overflowRightHandler={overflowRightHandler}
+    layer={layerID}
+    id="CLOSE_BTN"
+    overwriteControl={overwriteControl}
+  >
+    Close
+  </FocusElement>
+```
+
+У даному прикладі є фокусний елемент, __overwriteControl__ вказує, що якщо даний фокусний елемент є активним і ми натискаємо на кнопку вправо - тоді перехід буде відбуватись до елементу з __id__ RIGHT_EL_ID, якщо натиснемо на кнопку вліво - перехід буде відбуватись до елементу з __id__ LEFT_EL_ID і тд...
+
 ## useFocus
 
 ```js
@@ -131,7 +171,9 @@ __saveLastFocused__ (Boolean) - default value __true__
     onBlur,
     focusable,
     focusableContainer,
-    saveLastFocused
+    saveLastFocused,
+    id,
+    overwriteControl
   });
 ```
 
@@ -151,12 +193,17 @@ __saveLastFocused__ (Boolean) - default value __true__
   - focusable
   - focusableContainer
   - saveLastFocused
+  - id
+  - overwriteControl
 
 ### Хук повертає такі значення:
 
 - focused
 - setActiveLayer
+- remeasureAll
 
 __focused__ - властивість, яка вказує на те, чи є зафокушеним даний компонент.
 
 __setActiveLayer__ - функція, за допомогою якої можна змінювати активний шар(layer). Дана функція приймає два аргументи - layerID та options. Options(optional parameter) - об'єкт, який містить у собі властивість __useLastFocused__ (Boolean). Якщо __useLastFocused__ - true, тоді при перемиканні на шар, буде одразу зафокушений останній елемент, який був попередньо з фокусом.
+
+__remeasureAll__ - функція, за допомогою якої можна перерахувати розміри і місце знаходження фокусних елементів. Приймає один опціональний параметр - масив layerID, для яких необхідно здійснити перерахування. По дефолту перерахування відбувається для всіх шарів. Використовується у ДУЖЕ рідких випадках, коли змінюється лейаут в процесі рендреру фокусних елементів.

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { findDOMNode } from 'react-dom';
-import Vector from '../Vector';
+import measure from '../measure';
 import focusStore from '../store';
 import { DEFAULT_LAYER_ID } from '../consts';
 
@@ -9,7 +9,7 @@ const useFocus = (ref, options = {}) => {
     action, isFocused, layer = DEFAULT_LAYER_ID,
     overflowRightHandler, closest = false, onFocus,
     onBlur, focusable = true, focusableContainer,
-    saveLastFocused = true,
+    saveLastFocused = true, overwriteControl, id,
   } = options;
 
   const [focused, setFocused] = useState(false);
@@ -20,21 +20,12 @@ const useFocus = (ref, options = {}) => {
     }
 
     const el = findDOMNode(ref.current);
-    const { left, top, width, height } = el.getBoundingClientRect();
-    const center = Vector.getCenterVector(left, top, width, height);
-    const topLeft = new Vector(left, top);
-    const bottomRight = new Vector(left + width, top + height);
+    const positions = measure(el);
 
     const focusObj = {
       layer,
       defaultFocused: isFocused,
-      positions: {
-        center,
-        topLeft,
-        bottomRight,
-        height,
-        width,
-      },
+      positions,
       setFocused,
       action,
       overflowRightHandler,
@@ -44,6 +35,8 @@ const useFocus = (ref, options = {}) => {
       el,
       focusableContainer,
       saveLastFocused,
+      overwriteControl,
+      id,
     };
     
     focusStore.appendElement(focusObj, isFocused, layer);
@@ -69,6 +62,9 @@ const useFocus = (ref, options = {}) => {
     focused,
     setActiveLayer: (layerId, options) => {
       focusStore.setActiveLayer(layerId, options);
+    },
+    remeasureAll: (layers) => {
+      focusStore.remeasureAll(layers);
     }
   };
 }

@@ -1,9 +1,10 @@
 import Vector from './Vector';
 import { DIRECTION, DEFAULT_LAYER_ID, KEYS } from './consts';
 import addHandlers from './handlers';
+import measure from './measure';
 
 export class FocusStore {
-  elements = [];
+  elements = {};
   _lastFocusedFromLayer = {};
   _lastFocusedFromContainer = {};
   _active = null;
@@ -62,6 +63,12 @@ export class FocusStore {
 
   set lastFocusedFromContainer(value) {
     this._lastFocusedFromContainer = value;
+  }
+
+  get allElements() {
+    const layers = Object.values(this.elements);
+
+    return layers.reduce((acc, layer) => acc.concat(layer), []);
   }
 
   static instance = null;
@@ -125,6 +132,16 @@ export class FocusStore {
     }
   }
 
+  remeasureAll(neededLayers) {
+    const layers = Array.isArray(neededLayers) ? neededLayers : Object.keys(this.elements);
+
+    layers.forEach(layerName => {
+      this.elements[layerName].forEach((focusableElement, index) => {
+        this.elements[layerName][index].positions = measure(focusableElement.el);
+      });
+    });
+  }
+
   conditions(direction) {
     const { active } = this;
 
@@ -160,6 +177,16 @@ export class FocusStore {
 
   getNextElement(direction) {
     const { active, otherElements } = this;
+
+    // CHECK IF CURRENT ACTIVE HAS OVERWRITES
+    const overwriteID = active?.overwriteControl?.[direction];
+    const nextEl = this.getElementById(overwriteID);
+
+    if (overwriteID && nextEl) {
+      this.active = nextEl;
+      return;
+    }
+
     const { all, sameLine, idealAngle } = this.conditions(direction);
     const sameLineCandidates = otherElements.filter(el => all(el) && sameLine(el));
     const diffLineCandidates = otherElements.filter(el => all(el));
@@ -181,6 +208,12 @@ export class FocusStore {
     const closestEl = candidates[minIndex];
     
     this.active = closestEl;
+  }
+
+  getElementById(id) {
+    if (!id) return;
+
+    return this.allElements.find(el => el.id === id);
   }
 
   activeAction() {

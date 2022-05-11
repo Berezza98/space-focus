@@ -1,13 +1,14 @@
 import React, { useRef } from 'react';
 import propTypes from 'prop-types';
 import useFocus from '../hooks/useFocus';
+import { DIRECTION } from '../consts';
 
 const FocusElement = ({
   children, action, focus, className,
   focusedClassName, layer, overflowRightHandler,
   closest, onFocus, onBlur, focusable = true,
   style, dangerouslySetInnerHTML, focusableContainer,
-  saveLastFocused,
+  saveLastFocused, overwriteControl, id,
 }) => {
   const ref = useRef(null);
   const { focused } = useFocus(ref, {
@@ -21,6 +22,8 @@ const FocusElement = ({
     focusable,
     focusableContainer,
     saveLastFocused,
+    overwriteControl,
+    id,
   });
 
   const getClassNames = () => {
@@ -55,6 +58,13 @@ FocusElement.propTypes = {
   dangerouslySetInnerHTML: propTypes.object,
   focusableContainer: propTypes.string,
   saveLastFocused: propTypes.bool,
+  overwriteControl: propTypes.shape({
+    [DIRECTION.UP]: propTypes.oneOfType([propTypes.string, propTypes.number]),
+    [DIRECTION.DOWN]: propTypes.oneOfType([propTypes.string, propTypes.number]),
+    [DIRECTION.LEFT]: propTypes.oneOfType([propTypes.string, propTypes.number]),
+    [DIRECTION.RIGHT]: propTypes.oneOfType([propTypes.string, propTypes.number]),
+  }),
+  id: propTypes.oneOfType([propTypes.string, propTypes.number])
 };
 
 export default FocusElement;
