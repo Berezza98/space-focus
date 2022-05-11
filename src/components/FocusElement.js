@@ -6,9 +6,9 @@ import { DIRECTION } from '../consts';
 const FocusElement = ({
   children, action, focus, className,
   focusedClassName, layer, overflowRightHandler,
-  closest, onFocus, onBlur, focusable = true,
-  style, dangerouslySetInnerHTML, focusableContainer,
-  saveLastFocused, overwriteControl, id,
+  closest, onFocus, onBlur, onDirectionKeyDown,
+  focusable = true, style, dangerouslySetInnerHTML,
+  focusableContainer, saveLastFocused, overwriteControl, id,
 }) => {
   const ref = useRef(null);
   const { focused } = useFocus(ref, {
@@ -19,6 +19,7 @@ const FocusElement = ({
     closest,
     onFocus,
     onBlur,
+    onDirectionKeyDown,
     focusable,
     focusableContainer,
     saveLastFocused,
@@ -53,6 +54,7 @@ FocusElement.propTypes = {
   closest: propTypes.bool,
   onFocus: propTypes.func,
   onBlur: propTypes.func,
+  onDirectionKeyDown: propTypes.func,
   focusable: propTypes.bool,
   style: propTypes.object,
   dangerouslySetInnerHTML: propTypes.object,

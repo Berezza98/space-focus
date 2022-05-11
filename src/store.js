@@ -178,6 +178,10 @@ export class FocusStore {
   getNextElement(direction) {
     const { active, otherElements } = this;
 
+    if (typeof active.onDirectionKeyDown === 'function') {
+      active.onDirectionKeyDown(active, direction);
+    }
+
     // CHECK IF CURRENT ACTIVE HAS OVERWRITES
     const overwriteID = active?.overwriteControl?.[direction];
     const nextEl = this.getElementById(overwriteID);

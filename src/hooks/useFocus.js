@@ -8,8 +8,9 @@ const useFocus = (ref, options = {}) => {
   const {
     action, isFocused, layer = DEFAULT_LAYER_ID,
     overflowRightHandler, closest = false, onFocus,
-    onBlur, focusable = true, focusableContainer,
-    saveLastFocused = true, overwriteControl, id,
+    onBlur, onDirectionKeyDown, focusable = true,
+    focusableContainer, saveLastFocused = true,
+    overwriteControl, id,
   } = options;
 
   const [focused, setFocused] = useState(false);
@@ -32,6 +33,7 @@ const useFocus = (ref, options = {}) => {
       closest,
       onFocus,
       onBlur,
+      onDirectionKeyDown,
       el,
       focusableContainer,
       saveLastFocused,

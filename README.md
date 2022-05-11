@@ -99,6 +99,7 @@ options - об'єкт, який на даний момент приймає ті
 - layer
 - onFocus
 - onBlur
+- onDirectionKeyDown
 - overflowRightHandler
 - closest
 - focusable
@@ -106,6 +107,10 @@ options - об'єкт, який на даний момент приймає ті
 - saveLastFocused
 - id
 - overwriteControl
+
+__onDirectionKeyDown__ (Function)
+Подія, яка відбувається при натисканні будь-якої кнопки навігації(вверх, вниз, вліво, вправо). Приймає два аргументи:
+el - сам фокусний елемент, direction - напрямок кнопки, яка була натиснута(одна з властивостей константи __DIRECTION__)
 
 __closest__ (Boolean)
 
