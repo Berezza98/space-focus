@@ -81,8 +81,12 @@ export class FocusStore {
     return FocusStore.instance;
   }
 
-  static addHandlers(keys) {
-    const mergedKeys = Object.assign({}, KEYS, keys);
+  static addHandlers(options) {
+    const mergedKeys = Object.assign({}, {
+      keys: KEYS,
+      wheelDebounceMs: 300
+    }, options);
+
     addHandlers(mergedKeys);
   }
 

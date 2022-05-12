@@ -1,7 +1,13 @@
 import focusStore from './store';
+import debounce from './helpers/debounce';
 import { DIRECTION } from './consts';
 
-export default function addHandlers(keys) {
+const mouseWheelHandler = (e) => {
+  if (e.deltaY < 0) focusStore.getNextElement(DIRECTION.UP);
+  if (e.deltaY > 0) focusStore.getNextElement(DIRECTION.DOWN);
+};
+
+export default function addHandlers({ keys, wheelDebounceMs }) {
   window.addEventListener('keydown', (e) => {
     if (e.keyCode === keys.ENTER) {
       focusStore.activeAction();
@@ -22,4 +28,8 @@ export default function addHandlers(keys) {
       focusStore.getNextElement(DIRECTION.UP);
     }
   });
+
+  const debouncedMouseWheelHandler = debounce(mouseWheelHandler, wheelDebounceMs);
+
+  window.addEventListener('mousewheel', debouncedMouseWheelHandler);
 }
