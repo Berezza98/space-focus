@@ -183,7 +183,9 @@ export class FocusStore {
     const { active, otherElements } = this;
 
     if (typeof active.onDirectionKeyDown === 'function') {
-      active.onDirectionKeyDown(active, direction);
+      const continueHandlerExecution = active.onDirectionKeyDown(active, direction);
+
+      if (!continueHandlerExecution) return;
     }
 
     // CHECK IF CURRENT ACTIVE HAS OVERWRITES
