@@ -44,10 +44,12 @@ const useFocus = (ref, options = {}) => {
     focusStore.appendElement(focusObj, isFocused, layer);
     
     const mouseoverHandler = () => focusStore.active = focusObj;
-    const clickHandler = () => {
+    const clickHandler = (e) => {
       if (typeof action === 'function') {
         action();
       }
+
+      e.stopPropagation();
     }
 
     el.addEventListener('mouseover', mouseoverHandler);
