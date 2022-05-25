@@ -69,6 +69,9 @@ const useFocus = (ref, options = {}) => {
     },
     remeasureAll: (layers) => {
       focusStore.remeasureAll(layers);
+    },
+    setFocusById: (id, layer) => {
+      focusStore.setFocusById(id, layer);
     }
   };
 }

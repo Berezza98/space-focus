@@ -253,6 +253,15 @@ export class FocusStore {
     const defaultFocused = layer.find(el => el.defaultFocused);
     this.active = defaultFocused || this.elements[layerId][0];
   }
+
+  setFocusById(id, layer = DEFAULT_LAYER_ID) {
+    const element = this.elements[layer].find(el => el.id === id);
+
+    if (!element || this.active.id === id) return;
+
+    this.setActiveLayer(layer);
+    this.active = element;
+  }
 }
 
 export default FocusStore.createStore();
