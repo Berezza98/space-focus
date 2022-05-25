@@ -64,15 +64,10 @@ const useFocus = (ref, options = {}) => {
 
   return {
     focused,
-    setActiveLayer: (layerId, options) => {
-      focusStore.setActiveLayer(layerId, options);
-    },
-    remeasureAll: (layers) => {
-      focusStore.remeasureAll(layers);
-    },
-    setFocusById: (id, layer) => {
-      focusStore.setFocusById(id, layer);
-    }
+    setActiveLayer: (layerId, options) => focusStore.setActiveLayer(layerId, options),
+    remeasureAll: (layers) => focusStore.remeasureAll(layers),
+    setFocusById: (id, layer) => focusStore.setFocusById(id, layer),
+    isIdFocused: id => focusStore.isIdFocused(id),
   };
 }
 

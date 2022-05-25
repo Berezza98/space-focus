@@ -232,6 +232,10 @@ export class FocusStore {
     }
   }
 
+  isIdFocused(id) {
+    return this.active.id === id;
+  }
+
   setActiveLayer(layerId = DEFAULT_LAYER_ID, options) {
     const config = Object.assign({}, {
       useLastFocused: false,
