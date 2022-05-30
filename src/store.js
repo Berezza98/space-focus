@@ -93,7 +93,7 @@ export class FocusStore {
   _handleFocusableContainers(el) {
     if (!el.focusableContainer) return el;
 
-    const sameFocusableContainer = this.active.focusableContainer === el.focusableContainer;
+    const sameFocusableContainer = this.active?.focusableContainer === el.focusableContainer;
     const lastFocusedFromContainerExists = this.lastFocusedFromContainer[el.focusableContainer];
 
     if (!sameFocusableContainer && lastFocusedFromContainerExists) {
@@ -263,7 +263,9 @@ export class FocusStore {
 
     if (!element || this.active.id === id) return;
 
-    this.setActiveLayer(layer);
+    if (this.activeLayer !== layer) {
+      this.setActiveLayer(layer);
+    }
     this.active = element;
   }
 }
