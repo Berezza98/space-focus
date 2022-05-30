@@ -240,12 +240,12 @@ export class FocusStore {
     const config = Object.assign({}, {
       useLastFocused: false,
     }, options);
-
-    this.activeLayer = layerId;
-
+    
     const layer = this.elements[layerId];
-
-    if (!layer) return;
+    
+    if (!layer || this.activeLayer === layerId) return;
+    
+    this.activeLayer = layerId;
 
     const lastFocusedFromLayer = this.lastFocusedFromLayer[layerId];
 
@@ -263,9 +263,8 @@ export class FocusStore {
 
     if (!element || this.active.id === id) return;
 
-    if (this.activeLayer !== layer) {
-      this.setActiveLayer(layer);
-    }
+    this.setActiveLayer(layer);
+
     this.active = element;
   }
 }
