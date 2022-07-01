@@ -46,7 +46,7 @@ export class FocusStore {
   }
 
   get otherElements() {
-    return this.elements[this.activeLayer].filter(el => el !== this.active);
+    return this.elements[this.activeLayer]?.filter(el => el !== this.active);
   }
 
   get lastFocusedFromLayer() {
@@ -182,7 +182,7 @@ export class FocusStore {
   getNextElement(direction) {
     const { active, otherElements } = this;
 
-    if (typeof active.onDirectionKeyDown === 'function') {
+    if (typeof active?.onDirectionKeyDown === 'function') {
       const continueHandlerExecution = active.onDirectionKeyDown(active, direction);
 
       if (!continueHandlerExecution) return;
@@ -198,8 +198,11 @@ export class FocusStore {
     }
 
     const { all, sameLine, idealAngle } = this.conditions(direction);
-    const sameLineCandidates = otherElements.filter(el => all(el) && sameLine(el));
-    const diffLineCandidates = otherElements.filter(el => all(el));
+    const sameLineCandidates = otherElements?.filter(el => all(el) && sameLine(el));
+    const diffLineCandidates = otherElements?.filter(el => all(el));
+
+    if (!sameLineCandidates || !diffLineCandidates) return;
+
     const candidates = sameLineCandidates.length > 0 && !active.closest ? sameLineCandidates : diffLineCandidates;
     
     if (candidates.length === 0) {
@@ -227,7 +230,7 @@ export class FocusStore {
   }
 
   activeAction() {
-    if (typeof this.active.action === 'function') {
+    if (typeof this?.active?.action === 'function') {
       this.active.action();
     }
   }
