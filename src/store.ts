@@ -24,6 +24,8 @@ class FocusStore {
 
   private _getElementSizeFn: GetElementSizeFunction = (el: HTMLElement) => el.getBoundingClientRect();
 
+  private _layerHandlers: Record<string, (direction: Direction) => any> = {};
+
   set getElementSizeFn(value: GetElementSizeFunction) {
     this._getElementSizeFn = value;
   }
@@ -129,6 +131,10 @@ class FocusStore {
     return el;
   }
 
+  addLayerHandler(layerId: string, handler: (direction: Direction) => any) {
+    this._layerHandlers[layerId] = handler;
+  }
+
   appendElement(el: FocusObject, setFocus: boolean, layer: string) {
     if (!this.elements[layer]) {
       this.elements[layer] = [];
@@ -226,6 +232,9 @@ class FocusStore {
     const candidates = sameLineCandidates.length > 0 && !active.closest ? sameLineCandidates : diffLineCandidates;
 
     if (candidates.length === 0) {
+      // Handle Layer overflow handler
+      if (this._layerHandlers[this.activeLayer]) this._layerHandlers[this.activeLayer](direction);
+
       if (direction === DIRECTION.RIGHT) {
         // RIGHT OVERFLOW
         active.overflowRightHandler?.();
