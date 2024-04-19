@@ -226,9 +226,24 @@ class FocusStore {
     const candidates = sameLineCandidates.length > 0 && !active.closest ? sameLineCandidates : diffLineCandidates;
 
     if (candidates.length === 0) {
-      if (direction === DIRECTION.RIGHT && active.overflowRightHandler) {
+      if (direction === DIRECTION.RIGHT) {
         // RIGHT OVERFLOW
-        active.overflowRightHandler();
+        active.overflowRightHandler?.();
+      }
+
+      if (direction === DIRECTION.LEFT) {
+        // LEFT OVERFLOW
+        active.overflowLeftHandler?.();
+      }
+
+      if (direction === DIRECTION.UP) {
+        // UP OVERFLOW
+        active.overflowUpHandler?.();
+      }
+
+      if (direction === DIRECTION.DOWN) {
+        // RIGHT DOWN
+        active.overflowDownHandler?.();
       }
 
       return;

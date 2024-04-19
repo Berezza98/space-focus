@@ -19,6 +19,9 @@ interface FocusElementProps {
   dangerouslySetInnerHTML?: React.DOMAttributes<HTMLDivElement>['dangerouslySetInnerHTML'];
   overwriteControl?: FocusObject['overwriteControl'];
   overflowRightHandler?: FocusObject['overflowRightHandler'];
+  overflowLeftHandler?: FocusObject['overflowLeftHandler'];
+  overflowUpHandler?: FocusObject['overflowUpHandler'];
+  overflowDownHandler?: FocusObject['overflowDownHandler'];
   id?: FocusObject['id'];
   children: ReactNode;
 }
@@ -31,6 +34,9 @@ export const FocusElement: FC<FocusElementProps> = ({
   focusedClassName,
   layer,
   overflowRightHandler,
+  overflowLeftHandler,
+  overflowDownHandler,
+  overflowUpHandler,
   closest,
   onFocus,
   onBlur,
@@ -49,6 +55,9 @@ export const FocusElement: FC<FocusElementProps> = ({
     isFocused: focus,
     layer,
     overflowRightHandler,
+    overflowLeftHandler,
+    overflowDownHandler,
+    overflowUpHandler,
     closest,
     onFocus,
     onBlur,

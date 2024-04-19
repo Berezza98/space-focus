@@ -21,6 +21,9 @@ interface UseFocusOptions {
   layer: FocusObject['layer'];
   closest: FocusObject['closest'];
   overflowRightHandler: FocusObject['overflowRightHandler'];
+  overflowLeftHandler: FocusObject['overflowLeftHandler'];
+  overflowUpHandler: FocusObject['overflowUpHandler'];
+  overflowDownHandler: FocusObject['overflowDownHandler'];
   onFocus: FocusObject['onFocus'];
   onBlur: FocusObject['onBlur'];
   onDirectionKeyDown: FocusObject['onDirectionKeyDown'];
@@ -35,6 +38,9 @@ export const useFocus = (ref: React.RefObject<HTMLElement>, options: Partial<Use
     isFocused,
     layer,
     overflowRightHandler,
+    overflowLeftHandler,
+    overflowUpHandler,
+    overflowDownHandler,
     closest = false,
     onFocus,
     onBlur,
@@ -69,6 +75,9 @@ export const useFocus = (ref: React.RefObject<HTMLElement>, options: Partial<Use
       setFocused,
       action,
       overflowRightHandler,
+      overflowLeftHandler,
+      overflowUpHandler,
+      overflowDownHandler,
       closest,
       onFocus,
       onBlur,
@@ -107,6 +116,9 @@ export const useFocus = (ref: React.RefObject<HTMLElement>, options: Partial<Use
     layer,
     isFocused,
     overflowRightHandler,
+    overflowLeftHandler,
+    overflowUpHandler,
+    overflowDownHandler,
     closest,
     onFocus,
     onBlur,

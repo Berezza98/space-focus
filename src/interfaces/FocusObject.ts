@@ -11,6 +11,9 @@ export interface FocusObject {
   defaultFocused?: boolean;
   action?: () => any;
   overflowRightHandler?: () => any;
+  overflowLeftHandler?: () => any;
+  overflowUpHandler?: () => any;
+  overflowDownHandler?: () => any;
   closest?: boolean;
   onFocus?: (element: FocusObject) => any;
   onBlur?: (element: FocusObject) => any;
