@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { findDOMNode } from 'react-dom';
 import { SetActiveLayerOptions, focusStore } from '../store';
-import { DEFAULT_LAYER_ID } from '../consts';
 import { FocusObject } from '../interfaces/FocusObject';
 import { useSetActiveLayer } from './useSetActiveLayer';
+import { LayerContext } from '../contexts';
 
 interface UseFocusValue {
   focused: boolean;
@@ -33,7 +33,7 @@ export const useFocus = (ref: React.RefObject<HTMLElement>, options: Partial<Use
   const {
     action,
     isFocused,
-    layer = DEFAULT_LAYER_ID,
+    layer,
     overflowRightHandler,
     closest = false,
     onFocus,
@@ -48,6 +48,8 @@ export const useFocus = (ref: React.RefObject<HTMLElement>, options: Partial<Use
 
   const [focused, setFocused] = useState(false);
 
+  const layerFromContext = useContext(LayerContext);
+
   const setActiveLayer = useSetActiveLayer();
 
   useEffect(() => {
@@ -58,9 +60,10 @@ export const useFocus = (ref: React.RefObject<HTMLElement>, options: Partial<Use
     if (!el) return;
 
     const positions = focusStore.measure(el);
+    const selectedLayer = layer || layerFromContext;
 
     const focusObj: FocusObject = {
-      layer,
+      layer: selectedLayer,
       defaultFocused: isFocused,
       positions,
       setFocused,
@@ -77,7 +80,7 @@ export const useFocus = (ref: React.RefObject<HTMLElement>, options: Partial<Use
       id,
     };
 
-    focusStore.appendElement(focusObj, isFocused || false, layer);
+    focusStore.appendElement(focusObj, isFocused || false, selectedLayer);
 
     const mouseoverHandler = () => (focusStore.active = focusObj);
     const clickHandler = (e: MouseEvent) => {
@@ -92,7 +95,7 @@ export const useFocus = (ref: React.RefObject<HTMLElement>, options: Partial<Use
     el.addEventListener('click', clickHandler);
 
     return () => {
-      focusStore.removeElement(focusObj, layer);
+      focusStore.removeElement(focusObj, selectedLayer);
       el.removeEventListener('mouseover', mouseoverHandler);
       el.removeEventListener('click', clickHandler);
     };
