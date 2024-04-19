@@ -1,8 +1,8 @@
 import { FocusStore, FocusStoreInitOptions } from './store';
-
-export { FocusElement } from './components/FocusElement';
-export { useFocus } from './hooks/useFocus';
-export { DEFAULT_LAYER_ID, DIRECTION } from './consts';
+export * from './components/FocusElement';
+export * from './hooks/useFocus';
+export * from './consts';
+export * from './interfaces';
 
 export function initFocus(options: Partial<FocusStoreInitOptions>) {
   FocusStore.init(options);

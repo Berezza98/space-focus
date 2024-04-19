@@ -20,6 +20,7 @@ module.exports = {
       'react-dom': path.resolve(__dirname, './node_modules/react-dom'),
     }
   },
+  devtool: 'source-map',
   externals: {
     react: {
       commonjs: "react",

@@ -1,9 +1,10 @@
 {
   "name": "space-focus",
-  "version": "0.2.0",
+  "version": "0.2.3",
   "description": "Focus React library based on elements position and size",
   "main": "dist/index.bundle.js",
   "module": "dist/index.bundle.js",
+  "types": "dist/types/index.d.ts",
   "scripts": {
     "build": "webpack --config webpack.prod.js",
     "build-dev": "webpack --config webpack.dev.js",
