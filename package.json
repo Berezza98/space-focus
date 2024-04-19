@@ -1,6 +1,6 @@
 {
   "name": "space-focus",
-  "version": "0.1.16",
+  "version": "0.2.0",
   "description": "Focus React library based on elements position and size",
   "main": "dist/index.bundle.js",
   "module": "dist/index.bundle.js",
@@ -24,9 +24,6 @@
     "url": "https://github.com/Berezza98/space-focus/issues"
   },
   "homepage": "https://github.com/Berezza98/space-focus#readme",
-  "dependencies": {
-    "prop-types": "^15.8.1"
-  },
   "peerDependencies": {
     "react": "^16.8.0 || ^17 || ^18",
     "react-dom": "^16.8.0 || ^17 || ^18"
@@ -35,10 +32,12 @@
     "@babel/core": "^7.17.9",
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-react": "^7.16.7",
+    "@types/react": "^18.2.79",
+    "@types/react-dom": "^18.2.25",
     "babel-loader": "^8.2.5",
     "html-webpack-plugin": "^5.5.0",
-    "react": "^18.1.0",
-    "react-dom": "^18.1.0",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.4.5",
     "webpack": "^5.72.0",
     "webpack-cli": "^4.9.2",
     "webpack-dev-server": "^4.8.1",

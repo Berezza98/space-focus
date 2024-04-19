@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client';
-import initFocus from '../index';
+import initFocus from '../src/index';
 
 const {
   FocusElement

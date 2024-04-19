@@ -1,6 +1,7 @@
-import Vector from './Vector';
+import { Vector } from './Vector';
+import { ElementPosition } from './interfaces/ElementPosition';
 
-export default function measure(el) {
+export function measure(el: HTMLElement): ElementPosition {
   const { left, top, width, height } = el.getBoundingClientRect();
   const center = Vector.getCenterVector(left, top, width, height);
   const topLeft = new Vector(left, top);

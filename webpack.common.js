@@ -1,10 +1,8 @@
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: {
-    index: './src/index.js',
-    example: './src/example/index.js'
+    index: './src/index.ts',
   },
   output: {
     filename: '[name].bundle.js',
@@ -16,6 +14,7 @@ module.exports = {
     publicPath: '/dist/',
   },
   resolve: {
+    extensions: ['.tsx', '.ts', '.js'],
     alias: {
       'react': path.resolve(__dirname, './node_modules/react'),
       'react-dom': path.resolve(__dirname, './node_modules/react-dom'),
@@ -35,18 +34,17 @@ module.exports = {
       root: "ReactDOM"
     }
   },
-  plugins: [
-    new HtmlWebpackPlugin({
-      chunks : ['example'],
-      template :'./src/example/index.html',
-    }),
-  ],
   module: {
     rules: [
       {
         test: /\.(js)$/,
         exclude: /node_modules/,
         use: ['babel-loader']
+      },
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
       },
     ]
   },

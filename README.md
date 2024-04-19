@@ -1,61 +1,66 @@
+# English
+
 # Focus React library, based on elements position and size
 
-## Яку проблему вирішує даний модуль
+## What problem does this module solve?
 
-Даний модуль вирішує проблему переміщення фокуса на SmartTV. Переміщення фокусу відбувається при натисканні кнопок(конфігурація кнопок передається при ініціалізації).
+This module addresses the issue of focus navigation on SmartTVs. Focus navigation occurs when buttons are pressed (button configuration is passed during initialization).
 
-## Концепція бібліотеки
+## Library concept
 
-Бібліотека використовує три сутності для створення додатків з фокусами:
+The library employs three entities for creating focus-enabled applications:
 
 - Layers
 - FocusableElements
 - FocusableContainers
 
-__Layers__ - фокусні шари.
+**Layers** - focus layers.
 
-__FocusableElements__ - фокусні елементи(основний будівельний блок)
+**FocusableElements** - focusable elements (the primary building block).
 
-__FocusableContainers__ - фокусні конейнери
+**FocusableContainers** - focusable containers.
 
-Додаток може використовувати декілька шарів, наприклад, один шар для основного UI додатку, а другий - для popup. При створенні декількох шарів, елементи з одного шару не перетинаються з елементами іншого шару.
+An application can use multiple layers, for example, one layer for the main UI of the application and another for a popup. When creating multiple layers, elements from one layer do not intersect with elements from another layer.
 
-Кожен шар у собі може містити __FocusableElements__ та __FocusableContainers__
+Each layer can contain **FocusableElements** and **FocusableContainers**.
 
-### Різниця між __FocusableElements__ та __FocusableContainers__
+### Difference between **FocusableElements** and **FocusableContainers**
 
-__FocusableElement__ - це один фокусний елемент, який може містити у собі тільки потрібний контент.
+**FocusableElement** - a single focusable element that can only contain the necessary content.
 
-__FocusableContainer__ - це віртуальний контейнер, який дозволяє містити у собі більше одного  __FocusableElement__. Це реалізовано для того, щоб була можливість зберігати останній зафокушений __FocusableElement__ з __FocusableContainer__. При фокусі __FocusableContainer__, є можливість одразу поставити фокус на останній, який попередньо був зафокушений у даному __FocusableContainer__.
+**FocusableContainer** - a virtual container that allows containing more than one **FocusableElement**. This is implemented to retain the last focused **FocusableElement** within the **FocusableContainer**. When focusing on a **FocusableContainer**, it's possible to immediately focus on the last one that was previously focused within this **FocusableContainer**.
 
-## Ініціалізація
+## Initialization
 
 ```js
-  import initFocus from 'space-focus';
-  const focusResult = initFocus(options)
-```
-Функція ініціалізації приймає об'єкт конфігцрації - options.
-
-options - об'єкт, який на даний момент приймає властивості - keys та wheelDebounceMs.
-
-Дефолтні значення конфігурації кнопок:
-```js
-  export const KEYS = {
-    UP: 38,
-    DOWN: 40,
-    LEFT: 37,
-    RIGHT: 39,
-    ENTER: 13
-  };
+import initFocus from "space-focus";
+const focusResult = initFocus(options);
 ```
 
-__wheelDebounceMs__
+The initialization function accepts a configuration object - options.
 
-Властивість відповідає за timeout debounce в обробнику події mousewheel. Дефолтне значення 300.
+options - an object that currently accepts properties - keys and wheelDebounceMs.
 
-## Що ще еспортує бібліотека
+Default button configuration values:
+
 ```js
-  import { FocusElement, useFocus, DEFAULT_LAYER_ID } from 'space-focus';
+export const KEYS = {
+  UP: 38,
+  DOWN: 40,
+  LEFT: 37,
+  RIGHT: 39,
+  ENTER: 13,
+};
+```
+
+**wheelDebounceMs**
+
+The property is responsible for the debounce timeout in the mousewheel event handler. Default value is 300.
+
+## Other exports from the library
+
+```js
+import { FocusElement, useFocus, DEFAULT_LAYER_ID } from "space-focus";
 ```
 
 - DIRECTION
@@ -64,35 +69,38 @@ __wheelDebounceMs__
 - useFocus
 
 ## DIRECTION
-Константа-об'єкт, у якому зберігаються назви напрямків. Всередині 4 властивості: UP, DOWN, LEFT, RIGHT. Часто використовується для overwriteControl.
+
+A constant object that stores direction names. Inside are 4 properties: UP, DOWN, LEFT, RIGHT. Often used for overwriteControl.
 
 ## DEFAULT_LAYER_ID
 
-це назва дефолтного шару, частіше за все використовується у випаку, коли потрібно перенести фокус з іншого шару на дефолтний.
+This is the name of the default layer, most often used when it is necessary to move focus from another layer to the default one.
 
-Приклад: 
+Example:
+
 ```js
-  setActiveLayer(DEFAULT_LAYER_ID);
+setActiveLayer(DEFAULT_LAYER_ID);
 ```
 
 ## FocusElement
 
-це компопнент, за допомогою якого і можна ствоювати фокусабельні елементи та фокусні контейнери.
+This is the component with which focusable elements and focusable containers can be created.
 
 ```html
 <FocusElement
   focus
   className="block"
   focusedClassName="focused-block"
-  action={enterOrClickHandler}
-  overflowRightHandler={overflowRightHandler}
-  layer={layerID}
+  action="{enterOrClickHandler}"
+  overflowRightHandler="{overflowRightHandler}"
+  layer="{layerID}"
 >
- Hello I'm focusable component
+  Hello I'm focusable component
 </FocusElement>
 ```
 
-Даний компонент приймає такі параметри:
+This component accepts the following parameters:
+
 - children
 - dangerouslySetInnerHTML
 - action
@@ -112,81 +120,316 @@ __wheelDebounceMs__
 - id
 - overwriteControl
 
-__onDirectionKeyDown__ (Function)
-Подія, яка відбувається при натисканні будь-якої кнопки навігації(вверх, вниз, вліво, вправо). Приймає два аргументи:
-el - сам фокусний елемент, direction - напрямок кнопки, яка була натиснута(одна з властивостей константи __DIRECTION__).
-Необхідно повернути з функції true, якщо потрібно продовжити обробку події keydown і перейти до наступного фокусного елементу
-(по можливості), інакше виконання обробки події буде закінчено.
+**onDirectionKeyDown** (Function)
+An event that occurs when any navigation button (up, down, left, right) is pressed. It takes two arguments: el - the focus element itself, direction - the direction of the button pressed (one of the properties of the **DIRECTION** constant). It is necessary to return true from the function if it is necessary to continue handling the keydown event and move to the next focusable element (if possible), otherwise the event handling will be terminated.
 
-__closest__ (Boolean)
+**closest** (Boolean)
 
-Властивість відповідає за те, чи потрібно переміщатись до найближчого сусіда, який знаходиться не на одній площині.
-По дефолту - false, значить, що в приорітеті елементи, які знаходяться на одній площині.
+The property determines whether to move to the nearest neighbor that is not on the same plane. By default - false, which means that elements on the same plane are prioritized.
 
-__focusable__ (Boolean) - default value __true__
+**focusable** (Boolean) - default value **true**
 
-Властивість відповідає, чи буде цей компонент оброблятись бібліотекою і чи зможе він бути зафокушеним.
+The property indicates whether this component will be handled by the library and whether it can be focused.
 
-__focusableContainer__ (String)
+**focusableContainer** (String)
 
-Дана властивість відповідає за додавання __FocusableElement__ в __FocusableContainer__. Якщо такого фокусного контейнеру не існує - він буде створений.
+This property is responsible for adding **FocusableElement** to **FocusableContainer**. If such a focus container does not exist, it will be created.
 
-__saveLastFocused__ (Boolean) - default value __true__
+**saveLastFocused** (Boolean) - default value **true**
 
-Властивість, котра відповідає за те, чи буде даний __FocusableElement__ можливість зберігатись, як останній зафокушений елемент у __FocusableContainer__ та __Layer__.
+The property that determines whether this **FocusableElement** will be able to be saved as the last focused element in the **FocusableContainer** and **Layer**.
 
-__id__ (Number || String) - default undefined
+**id** (Number || String) - default undefined
 
-Властивість, котра відповідає за ідентифікацію фокусного елементу, за допомогою цієї властивості є можливість фокусити елементи з певним ідентифікатором, через __overwriteControl__
+The property that identifies the focus element, with this property it is possible to focus elements with a specific identifier, through **overwriteControl**.
 
-__overwriteControl__ (Object) - default undefined
+**overwriteControl** (Object) - default undefined
 
-Влстивість у вигляді об'єкта, за допомогою якої можна перезаписувати дефолтну поведінку фокуса. Для прикладу можна змінити елемент, на який поставиться фокус при натисненні кнопки будь-якого напрямку. Приклад:
+A property in the form of an object, which allows overriding the default focus behavior. For example, you can change the element that will receive focus when pressing any direction button. Example:
 
 ```js
-  import { DIRECTION, FocusElement } from 'space-focus';
+import { DIRECTION, FocusElement } from "space-focus";
 
-  const overwriteControl = {
-    [DIRECTION.UP]: 'UP_EL_ID',
-    [DIRECTION.DOWN]: 'DOWN_EL_ID',
-    [DIRECTION.LEFT]: 'LEFT_EL_ID',
-    [DIRECTION.RIGHT]: 'RIGHT_EL_ID',
-  };
+const overwriteControl = {
+  [DIRECTION.UP]: "UP_EL_ID",
+  [DIRECTION.DOWN]: "DOWN_EL_ID",
+  [DIRECTION.LEFT]: "LEFT_EL_ID",
+  [DIRECTION.RIGHT]: "RIGHT_EL_ID",
+};
 
-  <FocusElement
-    focus
-    className="block"
-    focusedClassName="focused-block"
-    action={enterOrClickHandler}
-    overflowRightHandler={overflowRightHandler}
-    layer={layerID}
-    id="CLOSE_BTN"
-    overwriteControl={overwriteControl}
-  >
-    Close
-  </FocusElement>
+<FocusElement
+  focus
+  className="block"
+  focusedClassName="focused-block"
+  action={enterOrClickHandler}
+  overflowRightHandler={overflowRightHandler}
+  layer={layerID}
+  id="CLOSE_BTN"
+  overwriteControl={overwriteControl}
+>
+  Close
+</FocusElement>;
 ```
 
-У даному прикладі є фокусний елемент, __overwriteControl__ вказує, що якщо даний фокусний елемент є активним і ми натискаємо на кнопку вправо - тоді перехід буде відбуватись до елементу з __id__ RIGHT_EL_ID, якщо натиснемо на кнопку вліво - перехід буде відбуватись до елементу з __id__ LEFT_EL_ID і тд...
+In this example, there is a focus element, **overwriteControl** specifies that if this focus element is active and we press the right button, the transition will be made to the element with the **id** RIGHT_EL_ID, if we press the left button - the transition will be made to the element with the **id** LEFT_EL_ID, and so on...
 
 ## useFocus
 
 ```js
-  const { focused, setActiveLayer } = useFocus(ref, {
-    action,
-    isFocused,
-    layer,
-    overflowRightHandler,
-    closest,
-    onFocus,
-    onBlur,
-    onDirectionKeyDown,
-    focusable,
-    focusableContainer,
-    saveLastFocused,
-    overwriteControl,
-    id,
-  });
+const { focused, setActiveLayer } = useFocus(ref, {
+  action,
+  isFocused,
+  layer,
+  overflowRightHandler,
+  closest,
+  onFocus,
+  onBlur,
+  onDirectionKeyDown,
+  focusable,
+  focusableContainer,
+  saveLastFocused,
+  overwriteControl,
+  id,
+});
+```
+
+This is a React hook, which allows creating custom focusable elements and containers.
+
+### The hook accepts the following arguments:
+
+- ref
+- a configuration object with properties:
+  - action
+  - isFocused
+  - layer
+  - overflowRightHandler
+  - closest
+  - onFocus
+  - onBlur
+  - onDirectionKeyDown
+  - focusable
+  - focusableContainer
+  - saveLastFocused
+  - overwriteControl
+  - id
+
+### The hook returns the following values:
+
+- focused
+- setActiveLayer
+- remeasureAll
+- setFocusById
+- isIdFocused
+
+**focused** - a property indicating whether the component is focused.
+
+**setActiveLayer** - a function to change the active layer. This function takes two arguments - layerID and options. Options (optional parameter) is an object that contains the **useLastFocused** property (Boolean). If **useLastFocused** is true, then when switching to the layer, the last element that was previously focused will be immediately focused.
+
+**remeasureAll** - a function to re-measure the sizes and positions of focus elements. It takes one optional parameter - an array of layerIDs for which re-measurement is necessary. By default, re-measurement is performed for all layers. Used in VERY rare cases when the layout changes during rendering of focus elements.
+
+**setFocusById** - a function to focus on any element by Id from any layer. It takes two parameters - **id** (required) and **layerId** (optional, default value **DEFAULT_LAYER_ID**).
+
+**isIdFocused** - a function to determine whether an element with a specific identifier is focused. It takes one parameter - **id** (required).
+
+---
+
+# Українська
+
+# Focus React library, based on elements position and size
+
+## Яку проблему вирішує даний модуль
+
+Даний модуль вирішує проблему переміщення фокуса на SmartTV. Переміщення фокусу відбувається при натисканні кнопок(конфігурація кнопок передається при ініціалізації).
+
+## Концепція бібліотеки
+
+Бібліотека використовує три сутності для створення додатків з фокусами:
+
+- Layers
+- FocusableElements
+- FocusableContainers
+
+**Layers** - фокусні шари.
+
+**FocusableElements** - фокусні елементи(основний будівельний блок)
+
+**FocusableContainers** - фокусні конейнери
+
+Додаток може використовувати декілька шарів, наприклад, один шар для основного UI додатку, а другий - для popup. При створенні декількох шарів, елементи з одного шару не перетинаються з елементами іншого шару.
+
+Кожен шар у собі може містити **FocusableElements** та **FocusableContainers**
+
+### Різниця між **FocusableElements** та **FocusableContainers**
+
+**FocusableElement** - це один фокусний елемент, який може містити у собі тільки потрібний контент.
+
+**FocusableContainer** - це віртуальний контейнер, який дозволяє містити у собі більше одного **FocusableElement**. Це реалізовано для того, щоб була можливість зберігати останній зафокушений **FocusableElement** з **FocusableContainer**. При фокусі **FocusableContainer**, є можливість одразу поставити фокус на останній, який попередньо був зафокушений у даному **FocusableContainer**.
+
+## Ініціалізація
+
+```js
+import initFocus from "space-focus";
+const focusResult = initFocus(options);
+```
+
+Функція ініціалізації приймає об'єкт конфігцрації - options.
+
+options - об'єкт, який на даний момент приймає властивості - keys та wheelDebounceMs.
+
+Дефолтні значення конфігурації кнопок:
+
+```js
+export const KEYS = {
+  UP: 38,
+  DOWN: 40,
+  LEFT: 37,
+  RIGHT: 39,
+  ENTER: 13,
+};
+```
+
+**wheelDebounceMs**
+
+Властивість відповідає за timeout debounce в обробнику події mousewheel. Дефолтне значення 300.
+
+## Що ще еспортує бібліотека
+
+```js
+import { FocusElement, useFocus, DEFAULT_LAYER_ID } from "space-focus";
+```
+
+- DIRECTION
+- DEFAULT_LAYER_ID
+- FocusElement
+- useFocus
+
+## DIRECTION
+
+Константа-об'єкт, у якому зберігаються назви напрямків. Всередині 4 властивості: UP, DOWN, LEFT, RIGHT. Часто використовується для overwriteControl.
+
+## DEFAULT_LAYER_ID
+
+це назва дефолтного шару, частіше за все використовується у випаку, коли потрібно перенести фокус з іншого шару на дефолтний.
+
+Приклад:
+
+```js
+setActiveLayer(DEFAULT_LAYER_ID);
+```
+
+## FocusElement
+
+це компопнент, за допомогою якого і можна ствоювати фокусабельні елементи та фокусні контейнери.
+
+```html
+<FocusElement
+  focus
+  className="block"
+  focusedClassName="focused-block"
+  action="{enterOrClickHandler}"
+  overflowRightHandler="{overflowRightHandler}"
+  layer="{layerID}"
+>
+  Hello I'm focusable component
+</FocusElement>
+```
+
+Даний компонент приймає такі параметри:
+
+- children
+- dangerouslySetInnerHTML
+- action
+- focus
+- style
+- className
+- focusedClassName
+- layer
+- onFocus
+- onBlur
+- onDirectionKeyDown
+- overflowRightHandler
+- closest
+- focusable
+- focusableContainer
+- saveLastFocused
+- id
+- overwriteControl
+
+**onDirectionKeyDown** (Function)
+Подія, яка відбувається при натисканні будь-якої кнопки навігації(вверх, вниз, вліво, вправо). Приймає два аргументи:
+el - сам фокусний елемент, direction - напрямок кнопки, яка була натиснута(одна з властивостей константи **DIRECTION**).
+Необхідно повернути з функції true, якщо потрібно продовжити обробку події keydown і перейти до наступного фокусного елементу
+(по можливості), інакше виконання обробки події буде закінчено.
+
+**closest** (Boolean)
+
+Властивість відповідає за те, чи потрібно переміщатись до найближчого сусіда, який знаходиться не на одній площині.
+По дефолту - false, значить, що в приорітеті елементи, які знаходяться на одній площині.
+
+**focusable** (Boolean) - default value **true**
+
+Властивість відповідає, чи буде цей компонент оброблятись бібліотекою і чи зможе він бути зафокушеним.
+
+**focusableContainer** (String)
+
+Дана властивість відповідає за додавання **FocusableElement** в **FocusableContainer**. Якщо такого фокусного контейнеру не існує - він буде створений.
+
+**saveLastFocused** (Boolean) - default value **true**
+
+Властивість, котра відповідає за те, чи буде даний **FocusableElement** можливість зберігатись, як останній зафокушений елемент у **FocusableContainer** та **Layer**.
+
+**id** (Number || String) - default undefined
+
+Властивість, котра відповідає за ідентифікацію фокусного елементу, за допомогою цієї властивості є можливість фокусити елементи з певним ідентифікатором, через **overwriteControl**
+
+**overwriteControl** (Object) - default undefined
+
+Влстивість у вигляді об'єкта, за допомогою якої можна перезаписувати дефолтну поведінку фокуса. Для прикладу можна змінити елемент, на який поставиться фокус при натисненні кнопки будь-якого напрямку. Приклад:
+
+```js
+import { DIRECTION, FocusElement } from "space-focus";
+
+const overwriteControl = {
+  [DIRECTION.UP]: "UP_EL_ID",
+  [DIRECTION.DOWN]: "DOWN_EL_ID",
+  [DIRECTION.LEFT]: "LEFT_EL_ID",
+  [DIRECTION.RIGHT]: "RIGHT_EL_ID",
+};
+
+<FocusElement
+  focus
+  className="block"
+  focusedClassName="focused-block"
+  action={enterOrClickHandler}
+  overflowRightHandler={overflowRightHandler}
+  layer={layerID}
+  id="CLOSE_BTN"
+  overwriteControl={overwriteControl}
+>
+  Close
+</FocusElement>;
+```
+
+У даному прикладі є фокусний елемент, **overwriteControl** вказує, що якщо даний фокусний елемент є активним і ми натискаємо на кнопку вправо - тоді перехід буде відбуватись до елементу з **id** RIGHT_EL_ID, якщо натиснемо на кнопку вліво - перехід буде відбуватись до елементу з **id** LEFT_EL_ID і тд...
+
+## useFocus
+
+```js
+const { focused, setActiveLayer } = useFocus(ref, {
+  action,
+  isFocused,
+  layer,
+  overflowRightHandler,
+  closest,
+  onFocus,
+  onBlur,
+  onDirectionKeyDown,
+  focusable,
+  focusableContainer,
+  saveLastFocused,
+  overwriteControl,
+  id,
+});
 ```
 
 це реакт хук, за допомогою якого, є можливість створювати кастомні фокусабельні елементи та контейнери.
@@ -217,12 +460,12 @@ __overwriteControl__ (Object) - default undefined
 - setFocusById
 - isIdFocused
 
-__focused__ - властивість, яка вказує на те, чи є зафокушеним даний компонент.
+**focused** - властивість, яка вказує на те, чи є зафокушеним даний компонент.
 
-__setActiveLayer__ - функція, за допомогою якої можна змінювати активний шар(layer). Дана функція приймає два аргументи - layerID та options. Options(optional parameter) - об'єкт, який містить у собі властивість __useLastFocused__ (Boolean). Якщо __useLastFocused__ - true, тоді при перемиканні на шар, буде одразу зафокушений останній елемент, який був попередньо з фокусом.
+**setActiveLayer** - функція, за допомогою якої можна змінювати активний шар(layer). Дана функція приймає два аргументи - layerID та options. Options(optional parameter) - об'єкт, який містить у собі властивість **useLastFocused** (Boolean). Якщо **useLastFocused** - true, тоді при перемиканні на шар, буде одразу зафокушений останній елемент, який був попередньо з фокусом.
 
-__remeasureAll__ - функція, за допомогою якої можна перерахувати розміри і місце знаходження фокусних елементів. Приймає один опціональний параметр - масив layerID, для яких необхідно здійснити перерахування. По дефолту перерахування відбувається для всіх шарів. Використовується у ДУЖЕ рідких випадках, коли змінюється лейаут в процесі рендреру фокусних елементів.
+**remeasureAll** - функція, за допомогою якої можна перерахувати розміри і місце знаходження фокусних елементів. Приймає один опціональний параметр - масив layerID, для яких необхідно здійснити перерахування. По дефолту перерахування відбувається для всіх шарів. Використовується у ДУЖЕ рідких випадках, коли змінюється лейаут в процесі рендреру фокусних елементів.
 
-__setFocusById__ - функція, за допомогою якої можна зафокусити будь-який елемент по Id з будь-якого шару. Приймає два параметри - __id__ (required) та __layerId__ (optional, default value __DEFAULT_LAYER_ID__)
+**setFocusById** - функція, за допомогою якої можна зафокусити будь-який елемент по Id з будь-якого шару. Приймає два параметри - **id** (required) та **layerId** (optional, default value **DEFAULT_LAYER_ID**)
 
-__isIdFocused__ - функція, за допомогою якої можна визначити, чи елемент з певним ідентифікатором є зафокушеним. Приймає один параметр - __id__ (required)
+**isIdFocused** - функція, за допомогою якої можна визначити, чи елемент з певним ідентифікатором є зафокушеним. Приймає один параметр - **id** (required)
