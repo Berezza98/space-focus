@@ -1,6 +1,6 @@
 import { HandlersInitOptions, addHandlers } from './handlers';
 import { FocusStoreOptions, focusStore } from './store';
-export * from './components/FocusElement';
+export * from './components';
 export * from './hooks';
 export * from './consts';
 export * from './interfaces';
