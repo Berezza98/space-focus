@@ -3,6 +3,7 @@ import { findDOMNode } from 'react-dom';
 import { SetActiveLayerOptions, focusStore } from '../store';
 import { DEFAULT_LAYER_ID } from '../consts';
 import { FocusObject } from '../interfaces/FocusObject';
+import { useSetActiveLayer } from './useSetActiveLayer';
 
 interface UseFocusValue {
   focused: boolean;
@@ -46,6 +47,8 @@ export const useFocus = (ref: React.RefObject<HTMLElement>, options: Partial<Use
   } = options;
 
   const [focused, setFocused] = useState(false);
+
+  const setActiveLayer = useSetActiveLayer();
 
   useEffect(() => {
     if (!ref || !focusable) return;
@@ -113,7 +116,7 @@ export const useFocus = (ref: React.RefObject<HTMLElement>, options: Partial<Use
 
   return {
     focused,
-    setActiveLayer: (layerId, options) => focusStore.setActiveLayer(layerId, options),
+    setActiveLayer,
     remeasureAll: (layers) => focusStore.remeasureAll(layers),
     setFocusById: (id, layer) => focusStore.setFocusById(id, layer),
     isIdFocused: (id) => focusStore.isIdFocused(id),
