@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { findDOMNode } from 'react-dom';
-import { measure } from '../measure';
 import { SetActiveLayerOptions, focusStore } from '../store';
 import { DEFAULT_LAYER_ID } from '../consts';
 import { FocusObject } from '../interfaces/FocusObject';
@@ -55,7 +54,7 @@ export const useFocus = (ref: React.RefObject<HTMLElement>, options: Partial<Use
 
     if (!el) return;
 
-    const positions = measure(el);
+    const positions = focusStore.measure(el);
 
     const focusObj: FocusObject = {
       layer,
@@ -115,8 +114,8 @@ export const useFocus = (ref: React.RefObject<HTMLElement>, options: Partial<Use
   return {
     focused,
     setActiveLayer: (layerId, options) => focusStore.setActiveLayer(layerId, options),
-    remeasureAll: layers => focusStore.remeasureAll(layers),
+    remeasureAll: (layers) => focusStore.remeasureAll(layers),
     setFocusById: (id, layer) => focusStore.setFocusById(id, layer),
-    isIdFocused: id => focusStore.isIdFocused(id),
+    isIdFocused: (id) => focusStore.isIdFocused(id),
   };
 };

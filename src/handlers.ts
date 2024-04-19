@@ -1,14 +1,25 @@
-import { focusStore } from './store';
 import { debounce } from './helpers/debounce';
-import { DIRECTION, Keys } from './consts';
+import { DIRECTION, KEYS, Keys } from './consts';
+import { focusStore } from './store';
 
-const mouseWheelHandler = (e: WheelEvent) => {
-  if (e.deltaY < 0) focusStore.getNextElement(DIRECTION.UP);
-  if (e.deltaY > 0) focusStore.getNextElement(DIRECTION.DOWN);
-};
+export interface HandlersInitOptions {
+  keys: Keys;
+  wheelDebounceMs: number;
+}
 
-export function addHandlers({ keys, wheelDebounceMs }: { keys: Keys; wheelDebounceMs: number }) {
-  window.addEventListener('keydown', e => {
+export function addHandlers(options: Partial<HandlersInitOptions>) {
+  const mergedKeys: HandlersInitOptions = Object.assign(
+    {},
+    {
+      keys: KEYS,
+      wheelDebounceMs: 300,
+    },
+    options,
+  );
+
+  const { keys, wheelDebounceMs } = mergedKeys;
+
+  window.addEventListener('keydown', (e) => {
     if (e.keyCode === keys.ENTER) {
       focusStore.activeAction();
     }
@@ -29,7 +40,10 @@ export function addHandlers({ keys, wheelDebounceMs }: { keys: Keys; wheelDeboun
     }
   });
 
-  const debouncedMouseWheelHandler = debounce(mouseWheelHandler, wheelDebounceMs);
+  const debouncedMouseWheelHandler = debounce((e: WheelEvent) => {
+    if (e.deltaY < 0) focusStore.getNextElement(DIRECTION.UP);
+    if (e.deltaY > 0) focusStore.getNextElement(DIRECTION.DOWN);
+  }, wheelDebounceMs);
 
   window.addEventListener('mousewheel', debouncedMouseWheelHandler);
 }

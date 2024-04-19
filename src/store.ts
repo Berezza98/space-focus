@@ -1,19 +1,17 @@
 import { Vector } from './Vector';
-import { DIRECTION, DEFAULT_LAYER_ID, KEYS, Keys, Direction } from './consts';
-import { addHandlers } from './handlers';
+import { DIRECTION, DEFAULT_LAYER_ID, Direction } from './consts';
+import { ElementPosition, GetElementSizeFunction } from './interfaces';
 import { FocusObject } from './interfaces/FocusObject';
-import { measure } from './measure';
-
-export interface FocusStoreInitOptions {
-  keys: Keys;
-  wheelDebounceMs: number;
-}
 
 export interface SetActiveLayerOptions {
   useLastFocused: boolean;
 }
 
-export class FocusStore {
+export interface FocusStoreOptions {
+  getElementSizeFn: GetElementSizeFunction;
+}
+
+class FocusStore {
   elements: Record<string | number, FocusObject[]> = {};
 
   private _lastFocusedFromLayer: Record<string, FocusObject> = {};
@@ -24,16 +22,22 @@ export class FocusStore {
 
   private _activeLayer: string = DEFAULT_LAYER_ID;
 
+  private _getElementSizeFn: GetElementSizeFunction = (el: HTMLElement) => el.getBoundingClientRect();
+
+  set getElementSizeFn(value: GetElementSizeFunction) {
+    this._getElementSizeFn = value;
+  }
+
   set active(el: FocusObject) {
     let elementToFocus = el;
 
     if (this.active) {
       this.active.setFocused(false);
-  
+
       if (typeof this.active.onBlur === 'function') {
         this.active.onBlur(this.active);
       }
-    } 
+    }
 
     elementToFocus = this._handleFocusableContainers(elementToFocus);
 
@@ -62,7 +66,7 @@ export class FocusStore {
   }
 
   get otherElements() {
-    return this.elements[this.activeLayer]?.filter(el => el !== this.active);
+    return this.elements[this.activeLayer]?.filter((el) => el !== this.active);
   }
 
   get lastFocusedFromLayer() {
@@ -87,30 +91,28 @@ export class FocusStore {
     return layers.reduce((acc, layer) => acc.concat(layer), []);
   }
 
-  static instance: FocusStore | null = null;
+  configure(options: Partial<FocusStoreOptions>) {
+    const { getElementSizeFn } = options;
 
-  static createStore() {
-    if (!FocusStore.instance) {
-      FocusStore.instance = new FocusStore();
-    }
-
-    return FocusStore.instance;
+    if (getElementSizeFn) this.getElementSizeFn = getElementSizeFn;
   }
 
-  static init(options: Partial<FocusStoreInitOptions>) {
-    const mergedKeys = Object.assign(
-      {},
-      {
-        keys: KEYS,
-        wheelDebounceMs: 300,
-      },
-      options
-    );
+  measure(el: HTMLElement): ElementPosition {
+    const { left, top, width, height } = this._getElementSizeFn(el);
+    const center = Vector.getCenterVector(left, top, width, height);
+    const topLeft = new Vector(left, top);
+    const bottomRight = new Vector(left + width, top + height);
 
-    addHandlers(mergedKeys);
+    return {
+      center,
+      topLeft,
+      bottomRight,
+      height,
+      width,
+    };
   }
 
-  _handleFocusableContainers(el: FocusObject) {
+  private _handleFocusableContainers(el: FocusObject) {
     if (!el.focusableContainer) return el;
 
     const sameFocusableContainer = this.active?.focusableContainer === el.focusableContainer;
@@ -159,9 +161,9 @@ export class FocusStore {
   remeasureAll(neededLayers: string[]) {
     const layers = Array.isArray(neededLayers) ? neededLayers : Object.keys(this.elements);
 
-    layers.forEach(layerName => {
+    layers.forEach((layerName) => {
       this.elements[layerName].forEach((focusableElement, index) => {
-        this.elements[layerName][index].positions = measure(focusableElement.el);
+        this.elements[layerName][index].positions = this.measure(focusableElement.el);
       });
     });
   }
@@ -216,8 +218,8 @@ export class FocusStore {
     }
 
     const { all, sameLine } = this.conditions(direction, active);
-    const sameLineCandidates = otherElements?.filter(el => all(el) && sameLine(el));
-    const diffLineCandidates = otherElements?.filter(el => all(el));
+    const sameLineCandidates = otherElements?.filter((el) => all(el) && sameLine(el));
+    const diffLineCandidates = otherElements?.filter((el) => all(el));
 
     if (!sameLineCandidates || !diffLineCandidates) return;
 
@@ -232,7 +234,7 @@ export class FocusStore {
       return;
     }
 
-    const distances = candidates.map(el => Vector.getDistance(active.positions.center, el.positions.center));
+    const distances = candidates.map((el) => Vector.getDistance(active.positions.center, el.positions.center));
     // const angles = candidates.map(el => Math.abs(idealAngle - Vector.getAngle(active.positions.center, el.positions.center)));
     // console.log('Dist: ', distances);
     // console.log('Angl: ', angles);
@@ -245,7 +247,7 @@ export class FocusStore {
   getElementById(id: string) {
     if (!id) return;
 
-    return this.allElements.find(el => el.id === id);
+    return this.allElements.find((el) => el.id === id);
   }
 
   activeAction() {
@@ -264,7 +266,7 @@ export class FocusStore {
       {
         useLastFocused: false,
       },
-      options
+      options,
     );
 
     const layer = this.elements[layerId];
@@ -280,12 +282,12 @@ export class FocusStore {
       return;
     }
 
-    const defaultFocused = layer.find(el => el.defaultFocused);
+    const defaultFocused = layer.find((el) => el.defaultFocused);
     this.active = defaultFocused || this.elements[layerId][0];
   }
 
   setFocusById(id: string, layer: string = DEFAULT_LAYER_ID) {
-    const element = this.elements[layer].find(el => el.id === id);
+    const element = this.elements[layer].find((el) => el.id === id);
 
     if (!element || this.active?.id === id) return;
 
@@ -295,4 +297,6 @@ export class FocusStore {
   }
 }
 
-export const focusStore = FocusStore.createStore();
+export const focusStore = new FocusStore();
+
+export type IFocusStore = FocusStore;
