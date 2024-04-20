@@ -5,7 +5,17 @@ export * from './hooks';
 export * from './consts';
 export * from './interfaces';
 
-export function initFocus(storeOptions: Partial<FocusStoreOptions>, handlerOptions: Partial<HandlersInitOptions>) {
-  focusStore.configure(storeOptions);
-  addHandlers(handlerOptions);
+function init() {
+  let wasInited = false;
+
+  return (storeOptions: Partial<FocusStoreOptions>, handlerOptions: Partial<HandlersInitOptions>) => {
+    if (wasInited) return;
+
+    focusStore.configure(storeOptions);
+    addHandlers(handlerOptions);
+
+    wasInited = true;
+  };
 }
+
+export const initFocus = init();
