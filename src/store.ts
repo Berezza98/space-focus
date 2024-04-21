@@ -30,7 +30,7 @@ class FocusStore {
     this._getElementSizeFn = value;
   }
 
-  set active(el: FocusObject) {
+  set active(el: FocusObject | undefined) {
     let elementToFocus = el;
 
     if (this.active) {
@@ -39,6 +39,11 @@ class FocusStore {
       if (typeof this.active.onBlur === 'function') {
         this.active.onBlur(this.active);
       }
+    }
+
+    if (!elementToFocus) {
+      this._active = elementToFocus;
+      return;
     }
 
     elementToFocus = this._handleFocusableContainers(elementToFocus);
@@ -148,6 +153,10 @@ class FocusStore {
   }
 
   removeElement(el: FocusObject, layer: string) {
+    if (this.active === el) {
+      this.active = undefined;
+    }
+
     if (el.focusableContainer && this.lastFocusedFromContainer[el.focusableContainer] === el) {
       delete this.lastFocusedFromContainer[el.focusableContainer];
     }
