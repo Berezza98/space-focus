@@ -123,9 +123,9 @@ This component accepts the following parameters:
 **onDirectionKeyDown** (Function)
 An event that occurs when any navigation button (up, down, left, right) is pressed. It takes two arguments: el - the focus element itself, direction - the direction of the button pressed (one of the properties of the **DIRECTION** constant). It is necessary to return true from the function if it is necessary to continue handling the keydown event and move to the next focusable element (if possible), otherwise the event handling will be terminated.
 
-**closest** (Boolean)
+**closest** (Boolean) - default value **true**
 
-The property determines whether to move to the nearest neighbor that is not on the same plane. By default - false, which means that elements on the same plane are prioritized.
+The property determines whether to move to the nearest neighbor that is not on the same plane. If set false value it will mean that elements on the same plane are prioritized.
 
 **focusable** (Boolean) - default value **true**
 
@@ -371,10 +371,10 @@ el - сам фокусний елемент, direction - напрямок кно
 Необхідно повернути з функції true, якщо потрібно продовжити обробку події keydown і перейти до наступного фокусного елементу
 (по можливості), інакше виконання обробки події буде закінчено.
 
-**closest** (Boolean)
+**closest** (Boolean) - default value **true**
 
 Властивість відповідає за те, чи потрібно переміщатись до найближчого сусіда, який знаходиться не на одній площині.
-По дефолту - false, значить, що в приорітеті елементи, які знаходяться на одній площині.
+Якщо поставити false, значить, що в приорітеті будуть елементи, які знаходяться на одній площині.
 
 **focusable** (Boolean) - default value **true**
 

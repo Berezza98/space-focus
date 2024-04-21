@@ -41,7 +41,7 @@ export const useFocus = (ref: React.RefObject<HTMLElement>, options: Partial<Use
     overflowLeftHandler,
     overflowUpHandler,
     overflowDownHandler,
-    closest = false,
+    closest = true,
     onFocus,
     onBlur,
     onDirectionKeyDown,

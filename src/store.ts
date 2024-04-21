@@ -178,25 +178,25 @@ class FocusStore {
     switch (direction) {
       case DIRECTION.RIGHT:
         return {
-          all: (el: FocusObject) => active.positions.bottomRight.x < el.positions.topLeft.x,
+          all: (el: FocusObject) => active.positions.bottomRight.x <= el.positions.topLeft.x,
           sameLine: (el: FocusObject) => active.positions.center.y === el.positions.center.y,
           idealAngle: 0,
         };
       case DIRECTION.LEFT:
         return {
-          all: (el: FocusObject) => active.positions.topLeft.x > el.positions.bottomRight.x,
+          all: (el: FocusObject) => active.positions.topLeft.x >= el.positions.bottomRight.x,
           sameLine: (el: FocusObject) => active.positions.center.y === el.positions.center.y,
           idealAngle: 180,
         };
       case DIRECTION.UP:
         return {
-          all: (el: FocusObject) => active.positions.topLeft.y > el.positions.bottomRight.y,
+          all: (el: FocusObject) => active.positions.topLeft.y >= el.positions.bottomRight.y,
           sameLine: (el: FocusObject) => active.positions.center.x === el.positions.center.x,
           idealAngle: -90,
         };
       case DIRECTION.DOWN:
         return {
-          all: (el: FocusObject) => active.positions.bottomRight.y < el.positions.topLeft.y,
+          all: (el: FocusObject) => active.positions.bottomRight.y <= el.positions.topLeft.y,
           sameLine: (el: FocusObject) => active.positions.center.x === el.positions.center.x,
           idealAngle: 90,
         };
@@ -229,7 +229,9 @@ class FocusStore {
 
     if (!sameLineCandidates || !diffLineCandidates) return;
 
-    const candidates = sameLineCandidates.length > 0 && !active.closest ? sameLineCandidates : diffLineCandidates;
+    const candidates = Array.from(
+      new Set(active.closest ? [...diffLineCandidates] : [...sameLineCandidates, ...diffLineCandidates]),
+    );
 
     if (candidates.length === 0) {
       // Handle Layer overflow handler
