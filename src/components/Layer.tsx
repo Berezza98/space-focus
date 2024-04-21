@@ -19,7 +19,7 @@ export const Layer: FC<LayerProps> = ({ name, layerHandler, setActive, useLastFo
     if (!layerHandler) return;
 
     addLayerHandler(name, layerHandler);
-  }, []);
+  }, [name, layerHandler]);
 
   useEffect(() => {
     if (!setActive) return;
@@ -27,7 +27,7 @@ export const Layer: FC<LayerProps> = ({ name, layerHandler, setActive, useLastFo
     setActiveLayer(name, {
       useLastFocused,
     });
-  }, []);
+  }, [setActive, name, useLastFocused]);
 
   return <LayerContext.Provider value={name}>{children}</LayerContext.Provider>;
 };
