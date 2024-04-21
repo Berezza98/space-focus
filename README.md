@@ -33,7 +33,7 @@ Each layer can contain **FocusableElements** and **FocusableContainers**.
 ## Initialization
 
 ```js
-import initFocus from "space-focus";
+import initFocus from 'space-focus';
 const focusResult = initFocus(options);
 ```
 
@@ -60,7 +60,7 @@ The property is responsible for the debounce timeout in the mousewheel event han
 ## Other exports from the library
 
 ```js
-import { FocusElement, useFocus, DEFAULT_LAYER_ID } from "space-focus";
+import { FocusElement, useFocus, DEFAULT_LAYER_ID } from 'space-focus';
 ```
 
 - DIRECTION
@@ -148,13 +148,13 @@ The property that identifies the focus element, with this property it is possibl
 A property in the form of an object, which allows overriding the default focus behavior. For example, you can change the element that will receive focus when pressing any direction button. Example:
 
 ```js
-import { DIRECTION, FocusElement } from "space-focus";
+import { DIRECTION, FocusElement } from 'space-focus';
 
 const overwriteControl = {
-  [DIRECTION.UP]: "UP_EL_ID",
-  [DIRECTION.DOWN]: "DOWN_EL_ID",
-  [DIRECTION.LEFT]: "LEFT_EL_ID",
-  [DIRECTION.RIGHT]: "RIGHT_EL_ID",
+  [DIRECTION.UP]: 'UP_EL_ID',
+  [DIRECTION.DOWN]: 'DOWN_EL_ID',
+  [DIRECTION.LEFT]: 'LEFT_EL_ID',
+  [DIRECTION.RIGHT]: 'RIGHT_EL_ID',
 };
 
 <FocusElement
@@ -268,13 +268,20 @@ This is a React hook, which allows creating custom focusable elements and contai
 ## Ініціалізація
 
 ```js
-import initFocus from "space-focus";
-const focusResult = initFocus(options);
+import initFocus from 'space-focus';
+const focusResult = initFocus(storeOptions, handlerOptions);
 ```
 
-Функція ініціалізації приймає об'єкт конфігцрації - options.
+Функція ініціалізації приймає 2 об'єкти конфігцрації - storeOptions та handlerOptions.
 
-options - об'єкт, який на даний момент приймає властивості - keys та wheelDebounceMs.
+storeOptions - об'єкт, який на даний момент приймає властивості:
+
+- getElementSizeFn(опціональна)
+
+handlerOptions - об'єкт, який на даний момент приймає властивості:
+
+- keys(опціональна)
+- wheelDebounceMs(опціональна)
 
 Дефолтні значення конфігурації кнопок:
 
@@ -295,13 +302,16 @@ export const KEYS = {
 ## Що ще еспортує бібліотека
 
 ```js
-import { FocusElement, useFocus, DEFAULT_LAYER_ID } from "space-focus";
+import { FocusElement, useFocus, DEFAULT_LAYER_ID } from 'space-focus';
 ```
 
 - DIRECTION
 - DEFAULT_LAYER_ID
 - FocusElement
 - useFocus
+- useSetActiveLayer
+- useAddLayerHandler
+- Layer
 
 ## DIRECTION
 
@@ -387,13 +397,13 @@ el - сам фокусний елемент, direction - напрямок кно
 Влстивість у вигляді об'єкта, за допомогою якої можна перезаписувати дефолтну поведінку фокуса. Для прикладу можна змінити елемент, на який поставиться фокус при натисненні кнопки будь-якого напрямку. Приклад:
 
 ```js
-import { DIRECTION, FocusElement } from "space-focus";
+import { DIRECTION, FocusElement } from 'space-focus';
 
 const overwriteControl = {
-  [DIRECTION.UP]: "UP_EL_ID",
-  [DIRECTION.DOWN]: "DOWN_EL_ID",
-  [DIRECTION.LEFT]: "LEFT_EL_ID",
-  [DIRECTION.RIGHT]: "RIGHT_EL_ID",
+  [DIRECTION.UP]: 'UP_EL_ID',
+  [DIRECTION.DOWN]: 'DOWN_EL_ID',
+  [DIRECTION.LEFT]: 'LEFT_EL_ID',
+  [DIRECTION.RIGHT]: 'RIGHT_EL_ID',
 };
 
 <FocusElement
@@ -469,3 +479,43 @@ const { focused, setActiveLayer } = useFocus(ref, {
 **setFocusById** - функція, за допомогою якої можна зафокусити будь-який елемент по Id з будь-якого шару. Приймає два параметри - **id** (required) та **layerId** (optional, default value **DEFAULT_LAYER_ID**)
 
 **isIdFocused** - функція, за допомогою якої можна визначити, чи елемент з певним ідентифікатором є зафокушеним. Приймає один параметр - **id** (required)
+
+## useSetActiveLayer
+
+```js
+const setActiveLayer = useSetActiveLayer();
+```
+
+Це реакт хук, за допомогою якого можна змінити активний шар(layer).
+
+Дана функція приймає два аргументи - layerID та options. Options(optional parameter) - об'єкт, який містить у собі властивість **useLastFocused** (Boolean). Якщо **useLastFocused** - true, тоді при перемиканні на шар, буде одразу зафокушений останній елемент, який був попередньо з фокусом.
+
+## useAddLayerHandler
+
+```js
+const addLayerHandler = useAddLayerHandler();
+
+addLayerHandler(layerId, handler);
+```
+
+Це реакт хук, за допомогою якого можна додати overflow обробник для шару(layer).
+
+Дана функція приймає два аргументи - layerID та handler. **handler: (direction: Direction) => any**.
+
+## Layer
+
+```js
+<Layer name="someLayerId" layerHandler={layerHandler}>
+  <FocusElement />
+</Layer>
+```
+
+Це реакт компонент, а саме контекстний провайдер, за допомогою якого є можливість декларативно створювати шар(layer).
+
+Приймає два параметра:
+
+- name(обовʼязковий параметр) - ідентифікатор шару
+- layerHandler(опціональний параметр) - **(direction: Direction) => any** обробник overflow для шару
+
+Усі дочерні фокусні елементи будуть знаходитись в даному шарі.
+Якщо у дочернього фокусного елемента явно вказаний ідентифікатор шару, до якого він має відноситись, то вказаний ідентифікатор буде мати приорітет.
