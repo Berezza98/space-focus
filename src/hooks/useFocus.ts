@@ -3,7 +3,7 @@ import { findDOMNode } from 'react-dom';
 import { SetActiveLayerOptions, focusStore } from '../store';
 import { FocusObject } from '../interfaces/FocusObject';
 import { useSetActiveLayer } from './useSetActiveLayer';
-import { LayerContext } from '../contexts';
+import { FocusableContainerContext, LayerContext } from '../contexts';
 
 interface UseFocusValue {
   focused: boolean;
@@ -55,6 +55,7 @@ export const useFocus = (ref: React.RefObject<HTMLElement>, options: Partial<Use
   const [focused, setFocused] = useState(false);
 
   const layerFromContext = useContext(LayerContext);
+  const focusableContainerFromContext = useContext(FocusableContainerContext);
 
   const setActiveLayer = useSetActiveLayer();
 
@@ -67,10 +68,12 @@ export const useFocus = (ref: React.RefObject<HTMLElement>, options: Partial<Use
 
     const positions = focusStore.measure(el);
     const selectedLayer = layer || layerFromContext;
+    const selectedFocusableContainer = focusableContainer || focusableContainerFromContext;
 
     const focusObj: FocusObject = {
       layer: selectedLayer,
       defaultFocused: isFocused,
+      focusableContainer: selectedFocusableContainer,
       positions,
       setFocused,
       action,
@@ -83,7 +86,6 @@ export const useFocus = (ref: React.RefObject<HTMLElement>, options: Partial<Use
       onBlur,
       onDirectionKeyDown,
       el,
-      focusableContainer,
       saveLastFocused,
       overwriteControl,
       id,

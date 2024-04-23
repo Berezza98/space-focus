@@ -18,7 +18,7 @@ export interface FocusObject {
   onFocus?: (element: FocusObject) => any;
   onBlur?: (element: FocusObject) => any;
   onDirectionKeyDown?: (active: FocusObject, direction: Direction) => boolean;
-  focusableContainer?: any; // TODO
+  focusableContainer?: string;
   saveLastFocused?: boolean;
   overwriteControl?: {
     [key in Direction]?: string;
