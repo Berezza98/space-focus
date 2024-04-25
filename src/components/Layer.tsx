@@ -1,5 +1,5 @@
-import { FC, ReactNode, useEffect } from 'react';
-import { LayerContext } from '../contexts';
+import { FC, ReactNode, useEffect, useMemo } from 'react';
+import { LayerContext, LayerContextData } from '../contexts';
 import { Direction } from '../consts';
 import { useAddLayerHandler, useSetActiveLayer } from '../hooks';
 
@@ -29,5 +29,12 @@ export const Layer: FC<LayerProps> = ({ name, layerHandler, setActive, useLastFo
     });
   }, [setActive, name, useLastFocused]);
 
-  return <LayerContext.Provider value={name}>{children}</LayerContext.Provider>;
+  const contextData = useMemo<LayerContextData>(() => {
+    return {
+      layerId: name,
+      setActive: setActive || false,
+    };
+  }, [name, setActive]);
+
+  return <LayerContext.Provider value={contextData}>{children}</LayerContext.Provider>;
 };

@@ -54,7 +54,7 @@ export const useFocus = (ref: React.RefObject<HTMLElement>, options: Partial<Use
 
   const [focused, setFocused] = useState(false);
 
-  const layerFromContext = useContext(LayerContext);
+  const { layerId: layerFromContext, setActive: isActiveFromContext } = useContext(LayerContext);
   const focusableContainerFromContext = useContext(FocusableContainerContext);
 
   const setActiveLayer = useSetActiveLayer();
@@ -70,9 +70,13 @@ export const useFocus = (ref: React.RefObject<HTMLElement>, options: Partial<Use
     const selectedLayer = layer || layerFromContext;
     const selectedFocusableContainer = focusableContainer || focusableContainerFromContext;
 
+    const elementsInLayer = focusStore.elements[selectedLayer];
+    const selectedIsFocused =
+      isFocused === undefined ? (elementsInLayer.length === 0 ? isActiveFromContext : false) : isFocused;
+
     const focusObj: FocusObject = {
       layer: selectedLayer,
-      defaultFocused: isFocused,
+      defaultFocused: selectedIsFocused,
       focusableContainer: selectedFocusableContainer,
       positions,
       setFocused,

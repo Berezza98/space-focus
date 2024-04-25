@@ -1,8 +1,14 @@
 import React from 'react';
 import { DEFAULT_LAYER_ID } from '../consts';
 
-const defaultValue = DEFAULT_LAYER_ID as LayerContextData;
+const defaultValue = {
+  layerId: DEFAULT_LAYER_ID,
+  setActive: false,
+} as LayerContextData;
 
-type LayerContextData = string;
+export type LayerContextData = {
+  layerId: string;
+  setActive: boolean;
+};
 
 export const LayerContext = React.createContext<LayerContextData>(defaultValue);
