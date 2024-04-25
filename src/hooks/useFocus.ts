@@ -70,9 +70,8 @@ export const useFocus = (ref: React.RefObject<HTMLElement>, options: Partial<Use
     const selectedLayer = layer || layerFromContext;
     const selectedFocusableContainer = focusableContainer || focusableContainerFromContext;
 
-    const elementsInLayer = focusStore.elements[selectedLayer];
-    const selectedIsFocused =
-      isFocused === undefined ? (elementsInLayer.length === 0 ? isActiveFromContext : false) : isFocused;
+    const currentLayerIsSelected = focusStore.activeLayer === selectedLayer;
+    const selectedIsFocused = !isFocused ? (currentLayerIsSelected ? false : isActiveFromContext) : isFocused;
 
     const focusObj: FocusObject = {
       layer: selectedLayer,
@@ -95,7 +94,7 @@ export const useFocus = (ref: React.RefObject<HTMLElement>, options: Partial<Use
       id,
     };
 
-    focusStore.appendElement(focusObj, isFocused || false, selectedLayer);
+    focusStore.appendElement(focusObj, selectedIsFocused, selectedLayer);
 
     const mouseoverHandler = () => (focusStore.active = focusObj);
     const clickHandler = (e: MouseEvent) => {

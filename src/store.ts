@@ -20,7 +20,7 @@ class FocusStore {
 
   private _active: FocusObject | undefined;
 
-  private _activeLayer: string = DEFAULT_LAYER_ID;
+  private _activeLayer: string | undefined = DEFAULT_LAYER_ID;
 
   private _getElementSizeFn: GetElementSizeFunction = (el: HTMLElement) => el.getBoundingClientRect();
 
@@ -42,7 +42,8 @@ class FocusStore {
     }
 
     if (!elementToFocus) {
-      this._active = elementToFocus;
+      this._active = undefined;
+      this.activeLayer = undefined;
       return;
     }
 
@@ -53,6 +54,7 @@ class FocusStore {
     }
 
     this._active = elementToFocus;
+    this.activeLayer = elementToFocus.layer;
     elementToFocus.setFocused(true);
 
     if (typeof elementToFocus.onFocus === 'function') {
@@ -73,6 +75,8 @@ class FocusStore {
   }
 
   get otherElements() {
+    if (!this.activeLayer) return [];
+
     return this.elements[this.activeLayer]?.filter((el) => el !== this.active);
   }
 
@@ -145,7 +149,7 @@ class FocusStore {
       this.elements[layer] = [];
     }
 
-    if ((setFocus || this.elements[layer].length === 0) && this.activeLayer === layer) {
+    if (setFocus || (this.elements[layer].length === 0 && this.activeLayer === el.layer)) {
       this.active = el;
     }
 
@@ -215,7 +219,7 @@ class FocusStore {
   getNextElement(direction: Direction) {
     const { active, otherElements } = this;
 
-    if (!active) return;
+    if (!active || !this.activeLayer) return;
 
     if (typeof active.onDirectionKeyDown === 'function') {
       const continueHandlerExecution = active.onDirectionKeyDown(active, direction);
