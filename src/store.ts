@@ -33,6 +33,8 @@ class FocusStore {
   set active(el: FocusObject | undefined) {
     let elementToFocus = el;
 
+    if (this.active === elementToFocus) return;
+
     if (this.active) {
       this.active.setFocused(false);
 
