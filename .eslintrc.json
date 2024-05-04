@@ -1,12 +1,7 @@
 {
-  "extends": [
-    "eslint:recommended",
-    "plugin:react/recommended",
-    "plugin:react/jsx-runtime",
-    "prettier"
-  ],
+  "extends": ["prettier", "plugin:@typescript-eslint/eslint-recommended", "plugin:react-hooks/recommended"],
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["prettier", "@typescript-eslint"],
   "env": {
     "browser": true,
     "es2021": true
@@ -18,7 +13,7 @@
   },
   "rules": {
     "no-unused-vars": "off",
-    "@typescript-eslint/no-unused-vars": ["error"],
+    "@typescript-eslint/no-unused-vars": "error",
     "no-restricted-exports": [
       "error",
       {

@@ -132,6 +132,9 @@ export const useFocus = (ref: React.RefObject<HTMLElement>, options: Partial<Use
     saveLastFocused,
     overwriteControl,
     id,
+    layerFromContext,
+    focusableContainerFromContext,
+    isActiveFromContext,
   ]);
 
   return {
