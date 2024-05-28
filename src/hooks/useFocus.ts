@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from 'react';
-import { findDOMNode } from 'react-dom';
 import { SetActiveLayerOptions, focusStore } from '../store';
 import { FocusObject } from '../interfaces/FocusObject';
 import { useSetActiveLayer } from './useSetActiveLayer';
@@ -62,7 +61,7 @@ export const useFocus = (ref: React.RefObject<HTMLElement>, options: Partial<Use
   useEffect(() => {
     if (!ref || !focusable) return;
 
-    const el = findDOMNode(ref.current) as HTMLElement;
+    const el = ref.current;
 
     if (!el) return;
 
