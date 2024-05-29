@@ -239,10 +239,8 @@ class FocusStore {
     }
 
     const { all, sameLine } = this.conditions(direction, active);
-    const sameLineCandidates = otherElements?.filter((el) => all(el) && sameLine(el));
-    const diffLineCandidates = otherElements?.filter((el) => all(el));
-
-    if (!sameLineCandidates || !diffLineCandidates) return;
+    const sameLineCandidates = otherElements.filter((el) => all(el) && sameLine(el));
+    const diffLineCandidates = otherElements.filter((el) => all(el));
 
     const candidates = Array.from(
       new Set(active.closest ? [...diffLineCandidates] : [...sameLineCandidates, ...diffLineCandidates]),
@@ -275,12 +273,21 @@ class FocusStore {
       return;
     }
 
+    const sameLineDistances = sameLineCandidates.map((el) =>
+      Vector.getDistance(active.positions.center, el.positions.center),
+    );
     const distances = candidates.map((el) => Vector.getDistance(active.positions.center, el.positions.center));
     // const angles = candidates.map(el => Math.abs(idealAngle - Vector.getAngle(active.positions.center, el.positions.center)));
     // console.log('Dist: ', distances);
     // console.log('Angl: ', angles);
-    const minIndex = distances.indexOf(Math.min(...distances));
-    const closestEl = candidates[minIndex];
+
+    const minIndex = distances.length > 0 ? distances.indexOf(Math.min(...distances)) : -1;
+    const minIndexSameLine =
+      sameLineDistances.length > 0 ? sameLineDistances.indexOf(Math.min(...sameLineDistances)) : -1;
+
+    const correctMinIndex = active.closest ? minIndex : minIndexSameLine !== -1 ? minIndexSameLine : minIndex;
+
+    const closestEl = candidates[correctMinIndex];
 
     this.active = closestEl;
   }
