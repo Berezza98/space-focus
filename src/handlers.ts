@@ -6,6 +6,8 @@ export interface HandlersInitOptions {
   keys: Keys;
   wheelDebounceMs: number;
   emitActionOnKeyUp: boolean;
+  actionStopPropagation: boolean;
+  actionPreventDefault: boolean;
 }
 
 export function addHandlers(options: Partial<HandlersInitOptions>) {
@@ -15,13 +17,18 @@ export function addHandlers(options: Partial<HandlersInitOptions>) {
       keys: KEYS,
       wheelDebounceMs: 300,
       emitActionOnKeyUp: false,
+      actionStopPropagation: false,
+      actionPreventDefault: false,
     },
     options,
   );
 
-  const { keys, wheelDebounceMs, emitActionOnKeyUp } = mergedKeys;
+  const { keys, wheelDebounceMs, emitActionOnKeyUp, actionPreventDefault, actionStopPropagation } = mergedKeys;
 
   window.addEventListener('keydown', (e) => {
+    if (actionPreventDefault) e.preventDefault();
+    if (actionStopPropagation) e.stopPropagation();
+
     if (e.keyCode === keys.ENTER) {
       if (emitActionOnKeyUp) return;
 
@@ -45,6 +52,9 @@ export function addHandlers(options: Partial<HandlersInitOptions>) {
   });
 
   window.addEventListener('keyup', (e) => {
+    if (actionPreventDefault) e.preventDefault();
+    if (actionStopPropagation) e.stopPropagation();
+
     if (e.keyCode === keys.ENTER) {
       if (emitActionOnKeyUp) focusStore.activeAction();
     }
