@@ -1,7 +1,7 @@
 import { Vector } from './Vector';
 import { DIRECTION, DEFAULT_LAYER_ID, Direction } from './consts';
 import { ElementPosition, GetElementSizeFunction } from './interfaces';
-import { FocusObject } from './interfaces/FocusObject';
+import { FocusObject } from './FocusObject';
 
 export interface SetActiveLayerOptions {
   useLastFocused: boolean;
@@ -146,19 +146,39 @@ class FocusStore {
     this._layerHandlers[layerId] = handler;
   }
 
-  appendElement(el: FocusObject, setFocus: boolean, layer: string) {
+  addElementEventListeners(focusObject: FocusObject) {
+    const { el, mouseoverHandler, clickHandler } = focusObject;
+
+    el.addEventListener('mouseover', mouseoverHandler);
+    el.addEventListener('click', clickHandler);
+  }
+
+  removeElementEventListeners(focusObject: FocusObject) {
+    const { el, mouseoverHandler, clickHandler } = focusObject;
+
+    el.removeEventListener('mouseover', mouseoverHandler);
+    el.removeEventListener('click', clickHandler);
+  }
+
+  appendElement(el: FocusObject) {
+    const { layer, defaultFocused } = el;
+
     if (!this.elements[layer]) {
       this.elements[layer] = [];
     }
 
-    if (setFocus || (this.elements[layer].length === 0 && this.activeLayer === el.layer)) {
+    if (defaultFocused || (this.elements[layer].length === 0 && this.activeLayer === el.layer)) {
       this.active = el;
     }
 
     this.elements[layer].push(el);
+
+    this.addElementEventListeners(el);
   }
 
-  removeElement(el: FocusObject, layer: string) {
+  removeElement(el: FocusObject) {
+    const { layer } = el;
+
     if (this.active === el) {
       this.active = undefined;
     }
@@ -177,6 +197,8 @@ class FocusStore {
     if (this.elements[layer].length === 0) {
       delete this.elements[layer];
     }
+
+    this.removeElementEventListeners(el);
   }
 
   remeasureAll(neededLayers: string[]) {

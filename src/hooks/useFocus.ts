@@ -1,6 +1,6 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { SetActiveLayerOptions, focusStore } from '../store';
-import { FocusObject } from '../interfaces/FocusObject';
+import { FocusObject, FocusObjectConstructorOptions } from '../FocusObject';
 import { useSetActiveLayer } from './useSetActiveLayer';
 import { FocusableContainerContext, LayerContext } from '../contexts';
 
@@ -16,19 +16,19 @@ interface UseFocusOptions {
   isFocused: boolean;
   focusable: boolean;
   saveLastFocused: boolean;
-  action: FocusObject['action'];
-  layer: FocusObject['layer'];
-  closest: FocusObject['closest'];
-  overflowRightHandler: FocusObject['overflowRightHandler'];
-  overflowLeftHandler: FocusObject['overflowLeftHandler'];
-  overflowUpHandler: FocusObject['overflowUpHandler'];
-  overflowDownHandler: FocusObject['overflowDownHandler'];
-  onFocus: FocusObject['onFocus'];
-  onBlur: FocusObject['onBlur'];
-  onDirectionKeyDown: FocusObject['onDirectionKeyDown'];
-  focusableContainer: FocusObject['focusableContainer'];
-  overwriteControl: FocusObject['overwriteControl'];
-  id: FocusObject['id'];
+  action: FocusObjectConstructorOptions['action'];
+  layer: FocusObjectConstructorOptions['layer'];
+  closest: FocusObjectConstructorOptions['closest'];
+  overflowRightHandler: FocusObjectConstructorOptions['overflowRightHandler'];
+  overflowLeftHandler: FocusObjectConstructorOptions['overflowLeftHandler'];
+  overflowUpHandler: FocusObjectConstructorOptions['overflowUpHandler'];
+  overflowDownHandler: FocusObjectConstructorOptions['overflowDownHandler'];
+  onFocus: FocusObjectConstructorOptions['onFocus'];
+  onBlur: FocusObjectConstructorOptions['onBlur'];
+  onDirectionKeyDown: FocusObjectConstructorOptions['onDirectionKeyDown'];
+  focusableContainer: FocusObjectConstructorOptions['focusableContainer'];
+  overwriteControl: FocusObjectConstructorOptions['overwriteControl'];
+  id: FocusObjectConstructorOptions['id'];
 }
 
 export const useFocus = (ref: React.RefObject<HTMLElement>, options: Partial<UseFocusOptions> = {}): UseFocusValue => {
@@ -52,6 +52,7 @@ export const useFocus = (ref: React.RefObject<HTMLElement>, options: Partial<Use
   } = options;
 
   const [focused, setFocused] = useState(false);
+  const currentFocusObjectRef = useRef<FocusObject | null>(null);
 
   const { layerId: layerFromContext, setActive: isActiveFromContext } = useContext(LayerContext);
   const focusableContainerFromContext = useContext(FocusableContainerContext);
@@ -65,18 +66,16 @@ export const useFocus = (ref: React.RefObject<HTMLElement>, options: Partial<Use
 
     if (!el) return;
 
-    const positions = focusStore.measure(el);
     const selectedLayer = layer || layerFromContext;
     const selectedFocusableContainer = focusableContainer || focusableContainerFromContext;
 
     const currentLayerIsSelected = focusStore.activeLayer === selectedLayer;
     const selectedIsFocused = !isFocused ? (currentLayerIsSelected ? false : isActiveFromContext) : isFocused;
 
-    const focusObj: FocusObject = {
+    const focusObjOptions: FocusObjectConstructorOptions = {
       layer: selectedLayer,
       defaultFocused: selectedIsFocused,
       focusableContainer: selectedFocusableContainer,
-      positions,
       setFocused,
       action,
       overflowRightHandler,
@@ -93,25 +92,60 @@ export const useFocus = (ref: React.RefObject<HTMLElement>, options: Partial<Use
       id,
     };
 
-    focusStore.appendElement(focusObj, selectedIsFocused, selectedLayer);
+    const focusObj = new FocusObject(focusObjOptions);
+    currentFocusObjectRef.current = focusObj;
 
-    const mouseoverHandler = () => (focusStore.active = focusObj);
-    const clickHandler = (e: MouseEvent) => {
-      if (typeof action === 'function') {
-        action();
-      }
-
-      e.stopPropagation();
-    };
-
-    el.addEventListener('mouseover', mouseoverHandler);
-    el.addEventListener('click', clickHandler);
+    focusStore.appendElement(focusObj);
 
     return () => {
-      focusStore.removeElement(focusObj, selectedLayer);
-      el.removeEventListener('mouseover', mouseoverHandler);
-      el.removeEventListener('click', clickHandler);
+      focusStore.removeElement(focusObj);
     };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    // UPDATE
+    const el = ref.current;
+
+    if (!el || !focusable) {
+      if (currentFocusObjectRef.current) focusStore.removeElement(currentFocusObjectRef.current);
+
+      return;
+    }
+
+    const selectedLayer = layer || layerFromContext;
+    const selectedFocusableContainer = focusableContainer || focusableContainerFromContext;
+
+    const currentLayerIsSelected = focusStore.activeLayer === selectedLayer;
+    const selectedIsFocused = !isFocused ? (currentLayerIsSelected ? false : isActiveFromContext) : isFocused;
+
+    const focusObjOptions: FocusObjectConstructorOptions = {
+      layer: selectedLayer,
+      defaultFocused: selectedIsFocused,
+      focusableContainer: selectedFocusableContainer,
+      setFocused,
+      action,
+      overflowRightHandler,
+      overflowLeftHandler,
+      overflowUpHandler,
+      overflowDownHandler,
+      closest,
+      onFocus,
+      onBlur,
+      onDirectionKeyDown,
+      el,
+      saveLastFocused,
+      overwriteControl,
+      id,
+    };
+
+    if (currentFocusObjectRef.current) {
+      currentFocusObjectRef.current.update(focusObjOptions);
+    } else {
+      const focusObj = new FocusObject(focusObjOptions);
+      currentFocusObjectRef.current = focusObj;
+
+      focusStore.appendElement(focusObj);
+    }
   }, [
     ref,
     setFocused,

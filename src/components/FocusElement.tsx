@@ -1,6 +1,6 @@
 import { FC, ReactNode, useRef } from 'react';
 import { useFocus } from '../hooks/useFocus';
-import { FocusObject } from '../interfaces/FocusObject';
+import { FocusObjectConstructorOptions } from '../FocusObject';
 
 interface FocusElementProps {
   focus?: boolean;
@@ -12,17 +12,17 @@ interface FocusElementProps {
   style?: React.CSSProperties;
   focusableContainer?: string;
   saveLastFocused?: boolean;
-  action?: FocusObject['action'];
-  onFocus?: FocusObject['onFocus'];
-  onBlur?: FocusObject['onBlur'];
-  onDirectionKeyDown?: FocusObject['onDirectionKeyDown'];
+  action?: FocusObjectConstructorOptions['action'];
+  onFocus?: FocusObjectConstructorOptions['onFocus'];
+  onBlur?: FocusObjectConstructorOptions['onBlur'];
+  onDirectionKeyDown?: FocusObjectConstructorOptions['onDirectionKeyDown'];
   dangerouslySetInnerHTML?: React.DOMAttributes<HTMLDivElement>['dangerouslySetInnerHTML'];
-  overwriteControl?: FocusObject['overwriteControl'];
-  overflowRightHandler?: FocusObject['overflowRightHandler'];
-  overflowLeftHandler?: FocusObject['overflowLeftHandler'];
-  overflowUpHandler?: FocusObject['overflowUpHandler'];
-  overflowDownHandler?: FocusObject['overflowDownHandler'];
-  id?: FocusObject['id'];
+  overwriteControl?: FocusObjectConstructorOptions['overwriteControl'];
+  overflowRightHandler?: FocusObjectConstructorOptions['overflowRightHandler'];
+  overflowLeftHandler?: FocusObjectConstructorOptions['overflowLeftHandler'];
+  overflowUpHandler?: FocusObjectConstructorOptions['overflowUpHandler'];
+  overflowDownHandler?: FocusObjectConstructorOptions['overflowDownHandler'];
+  id?: FocusObjectConstructorOptions['id'];
   children: ReactNode;
 }
 
