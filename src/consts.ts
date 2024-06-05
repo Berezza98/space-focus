@@ -7,14 +7,22 @@ export const DIRECTION = {
   RIGHT: 'RIGHT',
 } as const;
 
-export type Direction = typeof DIRECTION[keyof typeof DIRECTION];
+export type Direction = (typeof DIRECTION)[keyof typeof DIRECTION];
 
-export const KEYS = {
+export enum KeyName {
+  UP = 'UP',
+  DOWN = 'DOWN',
+  LEFT = 'LEFT',
+  RIGHT = 'RIGHT',
+  ENTER = 'ENTER',
+}
+
+export type Keys = Record<KeyName, number | number[]>;
+
+export const KEYS: Keys = {
   UP: 38,
   DOWN: 40,
   LEFT: 37,
   RIGHT: 39,
   ENTER: 13,
-};
-
-export type Keys = typeof KEYS;
+} as const;

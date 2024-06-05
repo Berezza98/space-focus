@@ -1,5 +1,5 @@
 import { debounce } from './helpers/debounce';
-import { DIRECTION, KEYS, Keys } from './consts';
+import { DIRECTION, KEYS, KeyName, Keys } from './consts';
 import { focusStore } from './store';
 
 export interface HandlersInitOptions {
@@ -23,30 +23,36 @@ export function addHandlers(options: Partial<HandlersInitOptions>) {
     options,
   );
 
+  const isKeyEmitted = (emittedKeyCode: number, checkKeyCode: Keys[KeyName]): boolean => {
+    if (Array.isArray(checkKeyCode)) return checkKeyCode.includes(emittedKeyCode);
+
+    return emittedKeyCode === checkKeyCode;
+  };
+
   const { keys, wheelDebounceMs, emitActionOnKeyUp, actionPreventDefault, actionStopPropagation } = mergedKeys;
 
   window.addEventListener('keydown', (e) => {
     if (actionPreventDefault) e.preventDefault();
     if (actionStopPropagation) e.stopPropagation();
 
-    if (e.keyCode === keys.ENTER) {
+    if (isKeyEmitted(e.keyCode, keys.ENTER)) {
       if (emitActionOnKeyUp) return;
 
       focusStore.activeAction();
     }
-    if (e.keyCode === keys.RIGHT) {
+    if (isKeyEmitted(e.keyCode, keys.RIGHT)) {
       focusStore.getNextElement(DIRECTION.RIGHT);
     }
 
-    if (e.keyCode === keys.LEFT) {
+    if (isKeyEmitted(e.keyCode, keys.LEFT)) {
       focusStore.getNextElement(DIRECTION.LEFT);
     }
 
-    if (e.keyCode === keys.DOWN) {
+    if (isKeyEmitted(e.keyCode, keys.DOWN)) {
       focusStore.getNextElement(DIRECTION.DOWN);
     }
 
-    if (e.keyCode === keys.UP) {
+    if (isKeyEmitted(e.keyCode, keys.UP)) {
       focusStore.getNextElement(DIRECTION.UP);
     }
   });
@@ -55,7 +61,7 @@ export function addHandlers(options: Partial<HandlersInitOptions>) {
     if (actionPreventDefault) e.preventDefault();
     if (actionStopPropagation) e.stopPropagation();
 
-    if (e.keyCode === keys.ENTER) {
+    if (isKeyEmitted(e.keyCode, keys.ENTER)) {
       if (emitActionOnKeyUp) focusStore.activeAction();
     }
   });
