@@ -11,6 +11,12 @@ export interface FocusStoreOptions {
   getElementSizeFn: GetElementSizeFunction;
 }
 
+interface CompareFunctions {
+  compareSides: (el: FocusObject) => boolean;
+  sameLine: (el: FocusObject) => boolean;
+  idealAngle: number;
+}
+
 class FocusStore {
   elements: Record<string | number, FocusObject[]> = {};
 
@@ -25,10 +31,6 @@ class FocusStore {
   private _getElementSizeFn: GetElementSizeFunction = (el: HTMLElement) => el.getBoundingClientRect();
 
   private _layerHandlers: Record<string, (direction: Direction) => any> = {};
-
-  set getElementSizeFn(value: GetElementSizeFunction) {
-    this._getElementSizeFn = value;
-  }
 
   set active(el: FocusObject | undefined) {
     let elementToFocus = el;
@@ -107,7 +109,7 @@ class FocusStore {
   configure(options: Partial<FocusStoreOptions>) {
     const { getElementSizeFn } = options;
 
-    if (getElementSizeFn) this.getElementSizeFn = getElementSizeFn;
+    if (getElementSizeFn) this._getElementSizeFn = getElementSizeFn;
   }
 
   measure(el: HTMLElement): ElementPosition {
@@ -211,29 +213,29 @@ class FocusStore {
     });
   }
 
-  conditions(direction: Direction, active: FocusObject) {
+  conditions(direction: Direction, active: FocusObject): CompareFunctions {
     switch (direction) {
       case DIRECTION.RIGHT:
         return {
-          all: (el: FocusObject) => active.positions.bottomRight.x <= el.positions.topLeft.x,
+          compareSides: (el: FocusObject) => active.positions.bottomRight.x <= el.positions.topLeft.x,
           sameLine: (el: FocusObject) => active.positions.center.y === el.positions.center.y,
           idealAngle: 0,
         };
       case DIRECTION.LEFT:
         return {
-          all: (el: FocusObject) => active.positions.topLeft.x >= el.positions.bottomRight.x,
+          compareSides: (el: FocusObject) => active.positions.topLeft.x >= el.positions.bottomRight.x,
           sameLine: (el: FocusObject) => active.positions.center.y === el.positions.center.y,
           idealAngle: 180,
         };
       case DIRECTION.UP:
         return {
-          all: (el: FocusObject) => active.positions.topLeft.y >= el.positions.bottomRight.y,
+          compareSides: (el: FocusObject) => active.positions.topLeft.y >= el.positions.bottomRight.y,
           sameLine: (el: FocusObject) => active.positions.center.x === el.positions.center.x,
           idealAngle: -90,
         };
       case DIRECTION.DOWN:
         return {
-          all: (el: FocusObject) => active.positions.bottomRight.y <= el.positions.topLeft.y,
+          compareSides: (el: FocusObject) => active.positions.bottomRight.y <= el.positions.topLeft.y,
           sameLine: (el: FocusObject) => active.positions.center.x === el.positions.center.x,
           idealAngle: 90,
         };
@@ -260,12 +262,13 @@ class FocusStore {
       return;
     }
 
-    const { all, sameLine } = this.conditions(direction, active);
-    const sameLineCandidates = otherElements.filter((el) => all(el) && sameLine(el));
-    const diffLineCandidates = otherElements.filter((el) => all(el));
+    const { compareSides, sameLine } = this.conditions(direction, active);
+
+    const sameLineCandidates = otherElements.filter((el) => compareSides(el) && sameLine(el));
+    const diffLineBySidesCandidates = otherElements.filter((el) => compareSides(el));
 
     const candidates = Array.from(
-      new Set(active.closest ? [...diffLineCandidates] : [...sameLineCandidates, ...diffLineCandidates]),
+      new Set(active.closest ? [...diffLineBySidesCandidates] : [...sameLineCandidates, ...diffLineBySidesCandidates]),
     );
 
     if (candidates.length === 0) {

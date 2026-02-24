@@ -34,12 +34,19 @@ Each layer can contain **FocusableElements** and **FocusableContainers**.
 
 ```js
 import initFocus from 'space-focus';
-const focusResult = initFocus(options);
+const focusResult = initFocus(storeOptions, handlerOptions);
 ```
 
-The initialization function accepts a configuration object - options.
+The initialization function accepts two configuration objects — storeOptions and handlerOptions.
 
-options - an object that currently accepts properties - keys and wheelDebounceMs.
+storeOptions is an object that currently supports the following properties:
+
+- getElementSizeFn(optional)
+
+handlerOptions - an object that accepts properties:
+
+- keys(optional)
+- wheelDebounceMs(optional)
 
 Default button configuration values:
 
