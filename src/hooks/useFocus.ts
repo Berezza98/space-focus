@@ -104,7 +104,8 @@ export const useFocus = (ref: React.RefObject<HTMLElement>, options: Partial<Use
 
   useEffect(() => {
     // UPDATE
-    const el = ref.current;
+
+    const el = ref?.current;
 
     if (!el || !focusable) {
       if (currentFocusObjectRef.current) focusStore.removeElement(currentFocusObjectRef.current);

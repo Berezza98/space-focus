@@ -33,8 +33,8 @@ Each layer can contain **FocusableElements** and **FocusableContainers**.
 ## Initialization
 
 ```js
-import initFocus from 'space-focus';
-const focusResult = initFocus(storeOptions, handlerOptions);
+import { spaceFocus } from 'space-focus';
+spaceFocus.init({ storeOptions, handlerOptions });
 ```
 
 The initialization function accepts two configuration objects — storeOptions and handlerOptions.
@@ -63,6 +63,14 @@ export const KEYS = {
 **wheelDebounceMs**
 
 The property is responsible for the debounce timeout in the mousewheel event handler. Default value is 300.
+
+## Enable/Disable event handlers
+
+```js
+import { spaceFocus } from 'space-focus';
+spaceFocus.enableHandlers(); // Enable keydown, keyup, mousewheel events
+spaceFocus.disableHandlers(); // Disable keydown, keyup, mousewheel events
+```
 
 ## Other exports from the library
 
@@ -275,8 +283,8 @@ This is a React hook, which allows creating custom focusable elements and contai
 ## Ініціалізація
 
 ```js
-import initFocus from 'space-focus';
-const focusResult = initFocus(storeOptions, handlerOptions);
+import { spaceFocus } from 'space-focus';
+spaceFocus.init({ storeOptions, handlerOptions });
 ```
 
 Функція ініціалізації приймає 2 об'єкти конфігцрації - storeOptions та handlerOptions.
@@ -305,6 +313,14 @@ export const KEYS = {
 **wheelDebounceMs**
 
 Властивість відповідає за timeout debounce в обробнику події mousewheel. Дефолтне значення 300.
+
+## Enable/Disable обробників подій
+
+```js
+import { spaceFocus } from 'space-focus';
+spaceFocus.enableHandlers(); // Дозволити обробку подій keydown, keyup, mousewheel
+spaceFocus.disableHandlers(); // Заборонити обробку подій keydown, keyup, mousewheel
+```
 
 ## Що ще еспортує бібліотека
 
